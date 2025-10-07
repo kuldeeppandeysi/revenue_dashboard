@@ -81,7 +81,7 @@ export default function MetricTrendsSection({ includeHeadcount = true }) {
     const chartConfig = {
         live_arr: { title: 'Live ARR', dataKey: 'live_arr', type: 'line', format: formatCurrency },
         contracted_arr: { title: 'Contracted ARR', dataKey: 'contracted_arr', type: 'line', format: formatCurrency, color: '#f97316' },
-        live_clients: { title: '# of Live Clients', dataKey: 'live_clients', type: 'bar', format: formatNumber },
+        live_clients: { title: '# Legal Entities', dataKey: 'live_clients', type: 'bar', format: formatNumber },
         contracted_clients: { title: '# of Contracted Clients', dataKey: 'contracted_clients', type: 'bar', format: formatNumber, color: '#f97316' },
         nrr: { title: 'NRR', dataKey: 'nrr', type: 'line', format: formatPercentage, color: '#10b981' },
         rule_of_80: { title: 'Rule of 80', dataKey: 'rule_of_80', type: 'bar', format: formatPercentage, color: '#8b5cf6' },

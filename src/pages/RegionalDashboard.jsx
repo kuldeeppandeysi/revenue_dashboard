@@ -24,7 +24,7 @@ const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
-    { group: 'Clients', title: "# of Live Clients", key: "live_clients", format: "number", icon: Users },
+    { group: 'Clients', title: "# Legal Entities", key: "live_clients", format: "number", icon: Users },
     { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
     { group: 'Health', title: "Customer Health", key: "chs", format: "number", icon: Heart },
     { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "number", icon: AlertTriangle },
@@ -37,7 +37,7 @@ const kpiCardDefinitions = [
 ];
 
 const trendChartDefinitions = [
-    { key: "live_clients", title: "# Live Clients", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
+    { key: "live_clients", title: "# Legal Entities", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
     { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 100, domain: [90, 120] }, // Bright Green
     { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
     { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 80, domain: [60, 90] }, // Teal

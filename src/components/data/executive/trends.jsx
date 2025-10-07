@@ -1,5 +1,4 @@
 export default [
-  { "date": "2024-03-01", "monthLabel": "Mar '24", "live_arr": 590400000, "contracted_arr": 0, "target_arr": 646800000, "live_clients": 0, "nrr": 0, "rule_of_80": 0, "gm_percent": 0, "ebitda_percent": 0, "headcount": 0 },
   { "date": "2024-04-01", "monthLabel": "Apr '24", "live_arr": 574800000, "contracted_arr": 0, "target_arr": 646800000, "live_clients": 156, "nrr": 0, "rule_of_80": 0, "gm_percent": 79.0, "ebitda_percent": -18.3, "headcount": 237 },
   { "date": "2024-05-01", "monthLabel": "May '24", "live_arr": 577200000, "contracted_arr": 0, "target_arr": 686400000, "live_clients": 155, "nrr": 0, "rule_of_80": 0, "gm_percent": 72.8, "ebitda_percent": -9.8, "headcount": 239 },
   { "date": "2024-06-01", "monthLabel": "Jun '24", "live_arr": 592800000, "contracted_arr": 0, "target_arr": 738000000, "live_clients": 163, "nrr": 0, "rule_of_80": 0, "gm_percent": 71.9, "ebitda_percent": -27.4, "headcount": 244 },

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { useAuth } from "@/contexts/AuthContext.jsx";
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -18,7 +19,9 @@ import {
   Box,
   MapPin,
   Code,
-  UploadCloud
+  UploadCloud,
+  LogOut,
+  User as UserIcon
 } from "lucide-react";
 import { User } from "@/api/entities";
 import sidebarKpis from "@/components/data/sidebar/kpis.jsx";
@@ -120,6 +123,7 @@ export default function Layout({ children, currentPageName, currency, setCurrenc
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { logout, user: authUser } = useAuth();
 
   useEffect(() => {
     loadUser();
@@ -325,32 +329,32 @@ export default function Layout({ children, currentPageName, currency, setCurrenc
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-navy-200 p-4 bg-white">
-            {user && (
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-gradient-to-br from-light-blue-500 to-light-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-sm">
-                    {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-navy-800 text-sm truncate">
-                    {user.full_name || 'User'}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      className={`text-xs font-bold ${
-                        user.role === 'admin' 
-                          ? 'bg-navy-800 text-white' 
-                          : 'bg-light-blue-100 text-light-blue-800'
-                      }`}
-                    >
-                      {user.role === 'admin' ? 'Administrator' : 'Analyst'}
-                    </Badge>
-                  </div>
+          <SidebarFooter className="border-t border-navy-200 p-4 bg-white space-y-4">
+            {/* User Profile Section */}
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-gradient-to-br from-light-blue-500 to-light-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <UserIcon className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-navy-800 text-sm truncate">
+                  {authUser || 'Admin User'}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Badge className="text-xs font-bold bg-navy-800 text-white">
+                    Administrator
+                  </Badge>
                 </div>
               </div>
-            )}
+            </div>
+            
+            {/* Logout Button */}
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors duration-200"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
           </SidebarFooter>
         </Sidebar>
 

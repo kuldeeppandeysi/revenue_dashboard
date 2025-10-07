@@ -1,5 +1,7 @@
 import Layout from "./Layout.jsx";
+import Login from "./Login.jsx";
 import React, { useState } from 'react';
+import { useAuth } from "@/contexts/AuthContext.jsx";
 
 import ExecutiveDashboard from "./ExecutiveDashboard";
 
@@ -69,6 +71,24 @@ function PagesContent() {
     const location = useLocation();
     const currentPage = _getCurrentPage(location.pathname);
     const [currency, setCurrency] = useState('USD');
+    const { isAuthenticated, isLoading, login } = useAuth();
+
+    // Show loading spinner while checking authentication
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-navy-50 to-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-8 h-8 border-4 border-navy-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-navy-600 font-medium">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show login page if not authenticated
+    if (!isAuthenticated) {
+        return <Login onLogin={login} />;
+    }
     
     return (
         <Layout currentPageName={currentPage} currency={currency} setCurrency={setCurrency}>
@@ -76,6 +96,7 @@ function PagesContent() {
                 
                     <Route path="/" element={<ExecutiveDashboard currency={currency} />} />
                 
+                    <Route path="/dashboard" element={<ExecutiveDashboard currency={currency} />} />
                 
                 <Route path="/ExecutiveDashboard" element={<ExecutiveDashboard currency={currency} />} />
                 
