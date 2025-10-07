@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,9 @@ import geoData from '@/components/data/revenue/geo.jsx';
 import waterfallData from '@/components/data/revenue/waterfall.jsx';
 import cohortRetentionData from '@/components/data/revenue/cohortRetention.jsx';
 
+// --- CURRENCY CONVERSION ---
+const USD_TO_INR_RATE = 84.5;
+
 
 export default function RevenueAnalytics({ currency = 'USD' }) { // Changed default currency
   const [loading, setLoading] = useState(true);
@@ -35,6 +38,49 @@ export default function RevenueAnalytics({ currency = 'USD' }) { // Changed defa
     const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Convert KPIs based on currency
+  const displayKpis = useMemo(() => {
+    if (currency === 'INR') {
+        return kpis;
+    }
+    const converted = { ...kpis };
+    const currencyKeys = [
+      'live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr',
+      'new_business_mrr', 'expansion_mrr', 'net_mrr_churn', 'arpa',
+      'live_mrr_target', 'live_arr_target', 'contracted_mrr_target', 'contracted_arr_target',
+      'new_business_mrr_target', 'expansion_mrr_target', 'net_mrr_churn_target', 'arpa_target'
+    ];
+    currencyKeys.forEach(key => {
+        if (converted[key] !== undefined && converted[key] !== null) {
+            converted[key] = converted[key] / USD_TO_INR_RATE;
+        }
+    });
+    return converted;
+  }, [currency]);
+
+  // Convert segment data based on currency
+  const displaySegmentData = useMemo(() => {
+    if (currency === 'INR') {
+        return segmentData;
+    }
+    return segmentData.map(segment => ({
+        ...segment,
+        mrr: segment.mrr / USD_TO_INR_RATE,
+        arpa: segment.arpa / USD_TO_INR_RATE
+    }));
+  }, [currency]);
+
+  // Convert geo data based on currency
+  const displayGeoData = useMemo(() => {
+    if (currency === 'INR') {
+        return geoData;
+    }
+    return geoData.map(geo => ({
+        ...geo,
+        mrr: geo.mrr / USD_TO_INR_RATE
+    }));
+  }, [currency]);
   
   const formatCurrency = (value) => {
     if (value === null || value === undefined) return "—";
@@ -64,26 +110,26 @@ export default function RevenueAnalytics({ currency = 'USD' }) { // Changed defa
 
       {/* Revenue Overview Cards - Live vs Contracted */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard title="Live MRR" value={kpis.live_mrr} target={kpis.live_mrr_target} change={kpis.live_mrr_change} format="currency" currency={currency} loading={loading} />
-        <MetricCard title="Contracted MRR" value={kpis.contracted_mrr} target={kpis.contracted_mrr_target} change={kpis.contracted_mrr_change} format="currency" currency={currency} loading={loading} />
-        <MetricCard title="Live ARR"  value={kpis.live_arr} target={kpis.live_arr_target} change={kpis.live_arr_change} format="currency" currency={currency} loading={loading} />
-        <MetricCard title="Contracted ARR" value={kpis.contracted_arr} target={kpis.contracted_arr_target} change={kpis.contracted_arr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Live MRR" value={displayKpis.live_mrr} target={displayKpis.live_mrr_target} change={displayKpis.live_mrr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Contracted MRR" value={displayKpis.contracted_mrr} target={displayKpis.contracted_mrr_target} change={displayKpis.contracted_mrr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Live ARR"  value={displayKpis.live_arr} target={displayKpis.live_arr_target} change={displayKpis.live_arr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Contracted ARR" value={displayKpis.contracted_arr} target={displayKpis.contracted_arr_target} change={displayKpis.contracted_arr_change} format="currency" currency={currency} loading={loading} />
       </div>
 
       {/* Client Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard title="Live Clients" value={kpis.live_clients} target={kpis.live_clients_target} change={kpis.live_clients_change} format="number" loading={loading} />
-        <MetricCard title="Contracted Clients" value={kpis.contracted_clients} target={kpis.contracted_clients_target} change={kpis.contracted_clients_change} format="number" loading={loading} />
-        <MetricCard title="New Business MRR" value={kpis.new_business_mrr} target={kpis.new_business_mrr_target} change={kpis.new_business_mrr_change} format="currency" currency={currency} loading={loading} />
-        <MetricCard title="Expansion MRR" value={kpis.expansion_mrr} target={kpis.expansion_mrr_target} change={kpis.expansion_mrr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Live Clients" value={displayKpis.live_clients} target={displayKpis.live_clients_target} change={displayKpis.live_clients_change} format="number" loading={loading} />
+        <MetricCard title="Contracted Clients" value={displayKpis.contracted_clients} target={displayKpis.contracted_clients_target} change={displayKpis.contracted_clients_change} format="number" loading={loading} />
+        <MetricCard title="New Business MRR" value={displayKpis.new_business_mrr} target={displayKpis.new_business_mrr_target} change={displayKpis.new_business_mrr_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Expansion MRR" value={displayKpis.expansion_mrr} target={displayKpis.expansion_mrr_target} change={displayKpis.expansion_mrr_change} format="currency" currency={currency} loading={loading} />
       </div>
 
       {/* Additional Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard title="Net MRR Churn" value={kpis.net_mrr_churn} target={kpis.net_mrr_churn_target} change={kpis.net_mrr_churn_change} format="currency" currency={currency} loading={loading} />
-        <MetricCard title="Rule of 80" value={kpis.rule_of_80} target={kpis.rule_of_80_target} change={kpis.rule_of_80_change} format="number" loading={loading} />
-        <MetricCard title="Gross Margin %" value={kpis.gm_percent} target={kpis.gm_percent_target} change={kpis.gm_percent_change} format="percentage" loading={loading} />
-        <MetricCard title="EBITDA %" value={kpis.ebitda_percent} target={kpis.ebitda_percent_target} change={kpis.ebitda_percent_change} format="percentage" loading={loading} />
+        <MetricCard title="Net MRR Churn" value={displayKpis.net_mrr_churn} target={displayKpis.net_mrr_churn_target} change={displayKpis.net_mrr_churn_change} format="currency" currency={currency} loading={loading} />
+        <MetricCard title="Rule of 80" value={displayKpis.rule_of_80} target={displayKpis.rule_of_80_target} change={displayKpis.rule_of_80_change} format="number" loading={loading} />
+        <MetricCard title="Gross Margin %" value={displayKpis.gm_percent} target={displayKpis.gm_percent_target} change={displayKpis.gm_percent_change} format="percentage" loading={loading} />
+        <MetricCard title="EBITDA %" value={displayKpis.ebitda_percent} target={displayKpis.ebitda_percent_target} change={displayKpis.ebitda_percent_change} format="percentage" loading={loading} />
       </div>
 
       <Tabs value={selectedView} onValueChange={setSelectedView}>
@@ -130,24 +176,24 @@ export default function RevenueAnalytics({ currency = 'USD' }) { // Changed defa
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-slate-50 rounded-xl">
-                  <div className="text-2xl font-bold text-slate-900">{kpis.nrr}%</div>
+                  <div className="text-2xl font-bold text-slate-900">{displayKpis.nrr}%</div>
                   <div className="text-sm text-slate-600 font-medium">Net Revenue Retention</div>
-                  <Badge className={`mt-2 ${kpis.nrr_change > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {kpis.nrr_change > 0 ? '+' : ''}{kpis.nrr_change}% MoM
+                  <Badge className={`mt-2 ${displayKpis.nrr_change > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {displayKpis.nrr_change > 0 ? '+' : ''}{displayKpis.nrr_change}% MoM
                   </Badge>
                 </div>
                 <div className="text-center p-4 bg-slate-50 rounded-xl">
-                  <div className="text-2xl font-bold text-slate-900">{formatCurrency(kpis.arpa)}</div>
+                  <div className="text-2xl font-bold text-slate-900">{formatCurrency(displayKpis.arpa)}</div>
                   <div className="text-sm text-slate-600 font-medium">ARPA</div>
-                   <Badge className={`mt-2 ${kpis.arpa_change > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {kpis.arpa_change > 0 ? '+' : ''}{kpis.arpa_change}% MoM
+                   <Badge className={`mt-2 ${displayKpis.arpa_change > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {displayKpis.arpa_change > 0 ? '+' : ''}{displayKpis.arpa_change}% MoM
                   </Badge>
                 </div>
                 <div className="text-center p-4 bg-slate-50 rounded-xl">
-                  <div className="text-2xl font-bold text-slate-900">{kpis.logo_churn_rate}%</div>
+                  <div className="text-2xl font-bold text-slate-900">{displayKpis.logo_churn_rate}%</div>
                   <div className="text-sm text-slate-600 font-medium">Logo Churn Rate</div>
-                  <Badge className={`mt-2 ${kpis.logo_churn_rate_change > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                    {kpis.logo_churn_rate_change > 0 ? '+' : ''}{kpis.logo_churn_rate_change}% MoM
+                  <Badge className={`mt-2 ${displayKpis.logo_churn_rate_change > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                    {displayKpis.logo_churn_rate_change > 0 ? '+' : ''}{displayKpis.logo_churn_rate_change}% MoM
                   </Badge>
                 </div>
               </div>
@@ -163,7 +209,7 @@ export default function RevenueAnalytics({ currency = 'USD' }) { // Changed defa
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {segmentData.map((segment) => (
+                  {displaySegmentData.map((segment) => (
                     <div key={segment.segment} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                       <div className="flex items-center gap-4">
                         <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
@@ -239,7 +285,7 @@ export default function RevenueAnalytics({ currency = 'USD' }) { // Changed defa
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {geoData.map((geo) => (
+                {displayGeoData.map((geo) => (
                   <div key={geo.geo} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                     <div className="flex items-center gap-4">
                       <div className="w-3 h-3 rounded-full bg-blue-500"></div>

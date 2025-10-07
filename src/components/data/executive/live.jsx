@@ -1,10 +1,10 @@
 export default {
-  "live_mrr": 643905213.84,
+  "live_mrr": 64400000,            // 64.4 Mn INR
   "live_mrr_change": 0,
-  "live_mrr_target": 642340777.96,
-  "live_arr": 91442160.54,
+  "live_mrr_target": 64200000,     // 64.2 Mn INR
+  "live_arr": 772800000,           // 64.4 x 12 = 772.8 Mn INR
   "live_arr_change": 0,
-  "live_arr_target": 91219992.13,
+  "live_arr_target": 770400000,    // 64.2 x 12 = 770.4 Mn INR
   "contracted_mrr": 0,
   "contracted_mrr_change": 0,
   "contracted_mrr_target": 0,
@@ -32,12 +32,12 @@ export default {
   "mau": 0,
   "mau_change": 0,
   "mau_target": 0,
-  "gm_percent": 67.1,
+  "gm_percent": 67.10,
   "gm_percent_change": 0,
-  "gm_percent_target": 64.4,
-  "ebitda_percent": -10.6,
+  "gm_percent_target": 64.40,
+  "ebitda_percent": -10.60,
   "ebitda_percent_change": 0,
-  "ebitda_percent_target": -17.2,
+  "ebitda_percent_target": -17.20,
   "headcount": 305,
   "headcount_change": 0,
   "headcount_target": 0
