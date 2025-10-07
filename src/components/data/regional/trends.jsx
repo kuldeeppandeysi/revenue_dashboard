@@ -1,0 +1,14 @@
+export default [
+    { "date": "2023-10-01", "country": "IN", "live_arr": 850000, "contracted_arr": 980000, "target_arr": 900000, "live_clients": 18, "nrr": 101, "headcount": 120, "rule_of_80": 47, "gm_percent": 72.5, "ebitda_percent": -14.0 },
+    { "date": "2023-11-01", "country": "IN", "live_arr": 880000, "contracted_arr": 1010000, "target_arr": 920000, "live_clients": 19, "nrr": 101.5, "headcount": 128, "rule_of_80": 48, "gm_percent": 73.0, "ebitda_percent": -13.5 },
+    { "date": "2023-12-01", "country": "IN", "live_arr": 920000, "contracted_arr": 1050000, "target_arr": 950000, "live_clients": 20, "nrr": 102, "headcount": 135, "rule_of_80": 49, "gm_percent": 73.5, "ebitda_percent": -12.0 },
+    { "date": "2024-01-01", "country": "IN", "live_arr": 980000, "contracted_arr": 1150000, "target_arr": 1000000, "live_clients": 22, "nrr": 103, "headcount": 140, "rule_of_80": 51, "gm_percent": 74.0, "ebitda_percent": -11.5 },
+    { "date": "2024-02-01", "country": "IN", "live_arr": 1020000, "contracted_arr": 1250000, "target_arr": 1100000, "live_clients": 23, "nrr": 103.5, "headcount": 145, "rule_of_80": 52.5, "gm_percent": 75.0, "ebitda_percent": -11.0 },
+    { "date": "2024-03-01", "country": "IN", "live_arr": 1080000, "contracted_arr": 1320000, "target_arr": 1200000, "live_clients": 25, "nrr": 103.5, "headcount": 150, "rule_of_80": 53, "gm_percent": 75.0, "ebitda_percent": -10.5 },
+    { "date": "2023-10-01", "country": "SEA", "live_arr": 250000, "contracted_arr": 320000, "target_arr": 300000, "live_clients": 3, "nrr": 94, "headcount": 50, "rule_of_80": 30, "gm_percent": 65, "ebitda_percent": -20.0 },
+    { "date": "2023-11-01", "country": "SEA", "live_arr": 265000, "contracted_arr": 350000, "target_arr": 310000, "live_clients": 3, "nrr": 95, "headcount": 55, "rule_of_80": 32, "gm_percent": 66, "ebitda_percent": -19.0 },
+    { "date": "2023-12-01", "country": "SEA", "live_arr": 280000, "contracted_arr": 380000, "target_arr": 320000, "live_clients": 4, "nrr": 96, "headcount": 58, "rule_of_80": 35, "gm_percent": 67, "ebitda_percent": -18.0 },
+    { "date": "2024-01-01", "country": "SEA", "live_arr": 310000, "contracted_arr": 420000, "target_arr": 350000, "live_clients": 5, "nrr": 96.5, "headcount": 60, "rule_of_80": 36, "gm_percent": 67.5, "ebitda_percent": -17.0 },
+    { "date": "2024-02-01", "country": "SEA", "live_arr": 340000, "contracted_arr": 450000, "target_arr": 400000, "live_clients": 6, "nrr": 97, "headcount": 62, "rule_of_80": 37.5, "gm_percent": 68, "ebitda_percent": -16.0 },
+    { "date": "2024-03-01", "country": "SEA", "live_arr": 360000, "contracted_arr": 480000, "target_arr": 420000, "live_clients": 7, "nrr": 97.5, "headcount": 65, "rule_of_80": 38, "gm_percent": 68, "ebitda_percent": -15.0 }
+]
