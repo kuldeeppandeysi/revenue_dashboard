@@ -19,6 +19,9 @@ export default function MetricCard({
   const formatValue = (val) => {
     if (loading || val === null || val === undefined) return "—";
     
+    // If the value is a string (like "Integration In Progress"), return it as-is
+    if (typeof val === 'string') return val;
+    
     switch (format) {
       case "currency":
         return new Intl.NumberFormat('en-US', { 
@@ -63,7 +66,9 @@ export default function MetricCard({
         
         <CardContent className="pt-0">
           <div className="flex items-end justify-between gap-4">
-            <div className="text-4xl font-black text-navy-900 leading-none tracking-tighter">
+            <div className={`font-black text-navy-900 leading-none tracking-tighter ${
+              typeof value === 'string' ? 'text-lg' : 'text-4xl'
+            }`}>
               {loading ? (
                 <div className="animate-pulse bg-navy-200 h-9 w-24 rounded-lg" />
               ) : (

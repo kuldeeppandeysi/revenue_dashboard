@@ -61,16 +61,31 @@ export default function RegionalDashboard({ currency = 'INR' }) {
     
     const kpis = useMemo(() => {
         const selectedKpis = regionalLiveKpis.find(c => c.country === selectedCountry) || {};
-        if (currency === 'INR') {
-            return selectedKpis;
+        let converted = { ...selectedKpis };
+        
+        // Convert currency for USD
+        if (currency === 'USD') {
+            const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
+            currencyKeys.forEach(key => {
+                if (converted[key] !== undefined) {
+                    converted[key] = converted[key] / USD_TO_INR_RATE;
+                }
+            });
         }
-        const converted = { ...selectedKpis };
-        const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
-        currencyKeys.forEach(key => {
-            if (converted[key] !== undefined) {
-                converted[key] = converted[key] / USD_TO_INR_RATE;
-            }
+        
+        // Set specific fields to show "Integration In Progress"
+        const integrationInProgressKeys = [
+            'contracted_mrr', 
+            'contracted_arr', 
+            'contracted_clients', 
+            'chs', 
+            'accounts_at_risk'
+        ];
+        
+        integrationInProgressKeys.forEach(key => {
+            converted[key] = 'Integration In Progress';
         });
+        
         return converted;
     }, [selectedCountry, currency]);
 

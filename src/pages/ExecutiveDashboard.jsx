@@ -177,16 +177,31 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
   };
 
   const displayKpis = useMemo(() => {
-    if (currency === 'INR') {
-        return kpis;
+    const converted = currency === 'INR' ? { ...kpis } : { ...kpis };
+    
+    // Convert currency for USD
+    if (currency === 'USD') {
+        const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
+        currencyKeys.forEach(key => {
+            if (converted[key] !== undefined && converted[key] !== null) {
+                converted[key] = converted[key] / USD_TO_INR_RATE;
+            }
+        });
     }
-    const converted = { ...kpis };
-    const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
-    currencyKeys.forEach(key => {
-        if (converted[key] !== undefined && converted[key] !== null) {
-            converted[key] = converted[key] / USD_TO_INR_RATE;
-        }
+    
+    // Set specific fields to show "Integration In Progress"
+    const integrationInProgressKeys = [
+        'contracted_mrr', 
+        'contracted_arr', 
+        'contracted_clients', 
+        'chs', 
+        'accounts_at_risk'
+    ];
+    
+    integrationInProgressKeys.forEach(key => {
+        converted[key] = 'Integration In Progress';
     });
+    
     return converted;
   }, [kpis, currency]);
 
