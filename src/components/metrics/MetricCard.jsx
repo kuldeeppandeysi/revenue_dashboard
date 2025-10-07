@@ -13,7 +13,7 @@ export default function MetricCard({
   status,
   loading = false,
   format = "number",
-  currency = "INR", // New prop
+  currency = "USD", // New prop
   categoryIcon: CategoryIcon // New prop for icon
 }) {
   const formatValue = (val) => {

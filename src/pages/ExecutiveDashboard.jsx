@@ -21,7 +21,7 @@ import annualTrendData from '@/components/data/executive/annual_trends.jsx';
 const USE_DATABASE = false;
 
 // --- CURRENCY CONVERSION ---
-const USD_TO_INR_RATE = 83.5;
+const USD_TO_INR_RATE = 84.5;
 
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
@@ -57,7 +57,7 @@ const GranularityButton = ({granularity, setGranularity, value, children}) => (
     </button>
 );
 
-export default function ExecutiveDashboard({ currency = 'INR' }) {
+export default function ExecutiveDashboard({ currency = 'USD' }) {
   const [notes, setNotes] = useState("");
   const [granularity, setGranularity] = useState('monthly');
   const [kpis, setKpis] = useState({});

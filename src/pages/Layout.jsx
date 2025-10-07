@@ -97,7 +97,7 @@ const navigationItems = [
   }
 ];
 
-const USD_TO_INR_RATE = 83.5;
+const USD_TO_INR_RATE = 84.5;
 
 const CurrencyToggle = ({ currency, setCurrency }) => (
     <div className="flex items-center gap-1 bg-navy-200 p-1 rounded-lg w-full">
@@ -116,11 +116,10 @@ const CurrencyToggle = ({ currency, setCurrency }) => (
     </div>
 );
 
-export default function Layout({ children, currentPageName }) {
+export default function Layout({ children, currentPageName, currency, setCurrency }) {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currency, setCurrency] = useState('INR');
 
   useEffect(() => {
     loadUser();
@@ -369,7 +368,7 @@ export default function Layout({ children, currentPageName }) {
 
           <div className="flex-1 overflow-auto">
             <div className="min-h-full">
-              {React.cloneElement(children, { currency })}
+              {children}
             </div>
           </div>
         </main>

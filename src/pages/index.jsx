@@ -1,4 +1,5 @@
 import Layout from "./Layout.jsx";
+import React, { useState } from 'react';
 
 import ExecutiveDashboard from "./ExecutiveDashboard";
 
@@ -67,35 +68,36 @@ function _getCurrentPage(url) {
 function PagesContent() {
     const location = useLocation();
     const currentPage = _getCurrentPage(location.pathname);
+    const [currency, setCurrency] = useState('USD');
     
     return (
-        <Layout currentPageName={currentPage}>
+        <Layout currentPageName={currentPage} currency={currency} setCurrency={setCurrency}>
             <Routes>            
                 
-                    <Route path="/" element={<ExecutiveDashboard />} />
+                    <Route path="/" element={<ExecutiveDashboard currency={currency} />} />
                 
                 
-                <Route path="/ExecutiveDashboard" element={<ExecutiveDashboard />} />
+                <Route path="/ExecutiveDashboard" element={<ExecutiveDashboard currency={currency} />} />
                 
-                <Route path="/RevenueAnalytics" element={<RevenueAnalytics />} />
+                <Route path="/RevenueAnalytics" element={<RevenueAnalytics currency={currency} />} />
                 
-                <Route path="/AlertsInsights" element={<AlertsInsights />} />
+                <Route path="/AlertsInsights" element={<AlertsInsights currency={currency} />} />
                 
-                <Route path="/DataIntegration" element={<DataIntegration />} />
+                <Route path="/DataIntegration" element={<DataIntegration currency={currency} />} />
                 
-                <Route path="/ProductAnalytics" element={<ProductAnalytics />} />
+                <Route path="/ProductAnalytics" element={<ProductAnalytics currency={currency} />} />
                 
-                <Route path="/CustomerHealth" element={<CustomerHealth />} />
+                <Route path="/CustomerHealth" element={<CustomerHealth currency={currency} />} />
                 
-                <Route path="/Account360" element={<Account360 />} />
+                <Route path="/Account360" element={<Account360 currency={currency} />} />
                 
-                <Route path="/RegionalDashboard" element={<RegionalDashboard />} />
+                <Route path="/RegionalDashboard" element={<RegionalDashboard currency={currency} />} />
                 
-                <Route path="/HtmlExport" element={<HtmlExport />} />
+                <Route path="/HtmlExport" element={<HtmlExport currency={currency} />} />
                 
-                <Route path="/DeveloperDocumentation" element={<DeveloperDocumentation />} />
+                <Route path="/DeveloperDocumentation" element={<DeveloperDocumentation currency={currency} />} />
                 
-                <Route path="/DataUploader" element={<DataUploader />} />
+                <Route path="/DataUploader" element={<DataUploader currency={currency} />} />
                 
             </Routes>
         </Layout>

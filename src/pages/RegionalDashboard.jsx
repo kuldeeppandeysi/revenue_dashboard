@@ -17,7 +17,7 @@ import quarterlyTrendData from '@/components/data/regional/trends_quarterly.jsx'
 import annualTrendData from '@/components/data/regional/trends_annual.jsx';
 
 // --- CURRENCY CONVERSION ---
-const USD_TO_INR_RATE = 83.5;
+const USD_TO_INR_RATE = 84.5;
 
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },

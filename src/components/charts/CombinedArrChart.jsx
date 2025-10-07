@@ -2,7 +2,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-export default function CombinedArrChart({ data, currency = 'INR' }) {
+export default function CombinedArrChart({ data, currency = 'USD' }) {
   const formatValue = (v) => {
     if (!v && v !== 0) return ''; // Handle null, undefined, NaN, but allow 0
     const options = {
