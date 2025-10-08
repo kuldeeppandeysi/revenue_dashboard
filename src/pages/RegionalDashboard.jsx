@@ -26,7 +26,7 @@ const kpiCardDefinitions = [
     // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
     { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
     // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
-    { group: 'Health', title: "Locations making Waves", key: "chs", format: "percentage", icon: Heart },
+    { group: 'Health', title: "Locations Health Score", key: "chs", format: "percentage", icon: Heart },
     { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
     { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
     { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "number", icon: Zap },
