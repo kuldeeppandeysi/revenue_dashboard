@@ -208,6 +208,18 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
         converted[key] = 'Integration In Progress';
     });
     
+    // Remove target values for specific metrics
+    const noTargetKeys = [
+        'live_clients',
+        'contracted_clients', 
+        'chs', 
+        'accounts_at_risk'
+    ];
+    
+    noTargetKeys.forEach(key => {
+        converted[`${key}_target`] = null;
+    });
+    
     return converted;
   }, [kpis, currency]);
 
