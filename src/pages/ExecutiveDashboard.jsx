@@ -358,7 +358,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                 dataKey={def.key}
                 formatValue={def.format}
                 color={def.color}
-                target={def.target}
+                //target={def.target}
                 yAxisDomain={def.domain}
               />
             </div>

@@ -189,7 +189,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                     <div className="flex items-center gap-2">
                         <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
                         <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
-                        <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton>
+                        {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
                     </div>
                 </div>
             </div>
