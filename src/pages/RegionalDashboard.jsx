@@ -222,7 +222,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
             </section>
             
             {/* Notes */}
-            <Card className="border-2 border-navy-200 bg-white/50 backdrop-blur-sm shadow-lg">
+            {/* <Card className="border-2 border-navy-200 bg-white/50 backdrop-blur-sm shadow-lg">
                 <CardHeader>
                     <CardTitle className="text-2xl font-black text-navy-900">Country Commentary</CardTitle>
                 </CardHeader>
@@ -235,7 +235,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                         className="w-full p-4 text-navy-700 bg-white rounded-lg border-2 border-navy-200"
                     />
                 </CardContent>
-            </Card>
+            </Card> */}
         </div>
     );
 }

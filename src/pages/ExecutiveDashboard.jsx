@@ -391,7 +391,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
         </div>
       </section>
       
-      <section>
+      {/* <section>
         <Card className="border-2 border-navy-200 bg-white/50 backdrop-blur-sm shadow-lg">
             <CardHeader>
                 <CardTitle className="text-2xl font-black text-navy-900">Executive Notes</CardTitle>
@@ -406,7 +406,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                 />
             </CardContent>
         </Card>
-      </section>
+      </section> */}
     </div>
   );
 }

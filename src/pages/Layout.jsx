@@ -316,14 +316,14 @@ export default function Layout({ children, currentPageName, currency, setCurrenc
                       <div className="text-light-blue-600 text-xs font-bold">+{sidebarKpis.nrr_change_percent}%</div>
                     </div>
                   </div>
-                  <div className="p-3 bg-light-blue-50 rounded-xl border border-light-blue-200">
+                  {/* <div className="p-3 bg-light-blue-50 rounded-xl border border-light-blue-200">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-navy-700 uppercase tracking-wide">Health Score</span>
                       <Badge className="bg-light-blue-600 text-white text-xs font-bold px-2 py-1">
                         Excellent
                       </Badge>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </SidebarGroupContent>
             </SidebarGroup>
