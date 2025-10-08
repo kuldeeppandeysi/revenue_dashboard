@@ -42,10 +42,10 @@ const kpiCardDefinitions = [
 
 const trendChartDefinitions = [
     { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
-    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 101, domain: [90, 130] }, // Bright Green
-    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 77, domain: [40, 100] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 67.1, domain: [60, 90] }, // Teal
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 13.2, domain: [-20, 20] }, // Red
+    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 0, domain: [90, 130] }, // Bright Green
+    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
+    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 64.1, domain: [60, 90] }, // Teal
+    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: -17.4, domain: [-20, 20] }, // Red
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
@@ -338,7 +338,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
               <div className="flex items-center gap-2">
                   <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
                   <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
-                  <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton>
+                  {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
               </div>
           </div>
       </div>
