@@ -62,24 +62,24 @@ const navigationItems = [
     icon: TrendingUp,
     roles: ["admin", "user"]
   },
-  {
-    title: "Product Analytics",
-    url: createPageUrl("ProductAnalytics"),
-    icon: Box,
-    roles: ["admin", "user"]
-  },
-  {
-    title: "Customer Health",
-    url: createPageUrl("CustomerHealth"),
-    icon: HeartPulse,
-    roles: ["admin", "user"]
-  },
-  {
-    title: "Alerts & Insights",
-    url: createPageUrl("AlertsInsights"),
-    icon: AlertTriangle,
-    roles: ["admin", "user"]
-  },
+  // {
+  //   title: "Product Analytics",
+  //   url: createPageUrl("ProductAnalytics"),
+  //   icon: Box,
+  //   roles: ["admin", "user"]
+  // },
+  // {
+  //   title: "Customer Health",
+  //   url: createPageUrl("CustomerHealth"),
+  //   icon: HeartPulse,
+  //   roles: ["admin", "user"]
+  // },
+  // {
+  //   title: "Alerts & Insights",
+  //   url: createPageUrl("AlertsInsights"),
+  //   icon: AlertTriangle,
+  //   roles: ["admin", "user"]
+  // },
   {
     title: "Data Uploader",
     url: createPageUrl("DataUploader"),

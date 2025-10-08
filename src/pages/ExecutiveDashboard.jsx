@@ -26,10 +26,10 @@ const USD_TO_INR_RATE = 84.5;
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
+    // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
+    // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
     { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
-    { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
+    // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
     { group: 'Health', title: "Customer Health", key: "chs", format: "percentage", icon: Heart },
     { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
     { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
@@ -188,7 +188,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     
     // Convert currency for USD
     if (currency === 'USD') {
-        const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
+        const currencyKeys = ['live_mrr', 'live_arr']; // Removed contracted keys
         currencyKeys.forEach(key => {
             // Convert main values
             if (converted[key] !== undefined && converted[key] !== null) {
@@ -205,7 +205,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     // Set specific fields to show "Integration In Progress"
     const integrationInProgressKeys = [
         'contracted_mrr', 
-        'contracted_arr', 
+        // 'contracted_arr',  // Commented out for removal from graphs
         'contracted_clients',
     ];
     
@@ -286,7 +286,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     if (currency === 'INR') {
         return aggregatedTrendData;
     }
-    const currencyKeys = ['live_arr', 'contracted_arr', 'target_arr'];
+    const currencyKeys = ['live_arr', 'target_arr']; // Removed contracted_arr
     return aggregatedTrendData.map(item => {
         const newItem = { ...item };
         currencyKeys.forEach(key => {
@@ -344,7 +344,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
           <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                   <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
-                  <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
+                  {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton> */}
                   {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
               </div>
           </div>

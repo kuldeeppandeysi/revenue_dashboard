@@ -3,6 +3,12 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function CombinedArrChart({ data, currency = 'USD' }) {
+  // Filter data to only show target_arr from April 2025 onwards
+  const processedData = data.map(item => ({
+    ...item,
+    target_arr: item.date && item.date >= '2025-04-01' ? item.target_arr : null
+  }));
+
   const formatValue = (v) => {
     if (!v && v !== 0) return ''; // Handle null, undefined, NaN, but allow 0
     const options = {
@@ -39,7 +45,7 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
   return (
     <ResponsiveContainer width="100%" height={400}>
       <LineChart
-        data={data}
+        data={processedData}
         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -73,14 +79,14 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
           strokeWidth={3} 
           dot={false}
         />
-        <Line 
+        {/* <Line 
           type="monotone" 
           dataKey="contracted_arr" 
           name="Contracted ARR" 
           stroke="#f97316" 
           strokeWidth={3} 
           dot={false}
-        />
+        /> */}
         <Line 
           type="monotone" 
           dataKey="target_arr" 
@@ -89,6 +95,7 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
           strokeWidth={2} 
           strokeDasharray="5 5" 
           dot={false}
+          connectNulls={false}
         />
       </LineChart>
     </ResponsiveContainer>

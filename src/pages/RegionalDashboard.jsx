@@ -22,10 +22,10 @@ const USD_TO_INR_RATE = 84.5;
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
+    // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
+    // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
     { group: 'Clients', title: "# Legal Entities", key: "live_clients", format: "number", icon: Users },
-    { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
+    // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
     { group: 'Health', title: "Customer Health", key: "chs", format: "number", icon: Heart },
     { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "number", icon: AlertTriangle },
     { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
@@ -40,8 +40,8 @@ const trendChartDefinitions = [
     { key: "live_clients", title: "# Legal Entities", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
     { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 100, domain: [90, 120] }, // Bright Green
     { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 80, domain: [60, 90] }, // Teal
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 0, domain: [-20, 20] }, // Red
+    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", targetKey: "gm_percent_target", domain: [60, 90] }, // Teal with dynamic target
+    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", targetKey: "ebitda_percent_target", domain: [-20, 20] }, // Red with dynamic target
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
@@ -65,7 +65,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         
         // Convert currency for USD
         if (currency === 'USD') {
-            const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
+            const currencyKeys = ['live_mrr', 'live_arr']; // Removed contracted keys
             currencyKeys.forEach(key => {
                 // Convert main values
                 if (converted[key] !== undefined) {
@@ -82,10 +82,8 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         // Set specific fields to show "Integration In Progress"
         const integrationInProgressKeys = [
             'contracted_mrr', 
-            'contracted_arr', 
-            'contracted_clients', 
-            'chs', 
-            'accounts_at_risk'
+            // 'contracted_arr',  // Commented out for removal from graphs
+            'contracted_clients'
         ];
         
         integrationInProgressKeys.forEach(key => {
@@ -114,11 +112,11 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         if (currency === 'INR') {
             return aggregatedTrendData;
         }
-        const currencyKeys = ['live_arr', 'contracted_arr', 'target_arr'];
+        const currencyKeys = ['live_arr', 'target_arr']; // Removed contracted_arr
         return aggregatedTrendData.map(item => {
             const newItem = { ...item };
             currencyKeys.forEach(key => {
-                if (newItem[key] !== undefined) {
+                if (newItem[key] !== undefined && newItem[key] !== null) { // Check for both undefined and null
                     newItem[key] = newItem[key] / USD_TO_INR_RATE;
                 }
             });
@@ -188,7 +186,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
-                        <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
+                        {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton> */}
                         {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
                     </div>
                 </div>
@@ -207,6 +205,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                       <MetricTrendChart 
                         data={displayTrendData}
                         dataKey={def.key}
+                        targetKey={def.targetKey}
                         formatValue={def.format}
                         color={def.color}
                         target={def.target}
