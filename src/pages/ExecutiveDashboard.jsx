@@ -28,12 +28,12 @@ const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
-    { group: 'Clients', title: "# Legal Entities", key: "live_clients", format: "number", icon: Users },
+    { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
     { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
-    { group: 'Health', title: "Customer Health", key: "chs", format: "number", icon: Heart },
-    { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "number", icon: AlertTriangle },
+    { group: 'Health', title: "Customer Health", key: "chs", format: "percentage", icon: Heart },
+    { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
     { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
-    { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "number", icon: Zap },
+    { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "percentage", icon: Zap },
     { group: 'Performance', title: "MAU", key: "mau", format: "number", icon: BarChart },
     { group: 'Profitability', title: "GM %", key: "gm_percent", format: "percentage", icon: Percent },
     { group: 'Profitability', title: "EBITDA %", key: "ebitda_percent", format: "percentage", icon: Percent },
@@ -41,11 +41,11 @@ const kpiCardDefinitions = [
 ];
 
 const trendChartDefinitions = [
-    { key: "live_clients", title: "# Legal Entities", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
-    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 110, domain: [90, 130] }, // Bright Green
-    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 64.4, domain: [60, 90] }, // Teal
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 17.2, domain: [-20, 20] }, // Red
+    { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
+    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 101, domain: [90, 130] }, // Bright Green
+    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 77, domain: [40, 100] }, // Purple
+    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 67.1, domain: [60, 90] }, // Teal
+    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 13.2, domain: [-20, 20] }, // Red
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
@@ -199,9 +199,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     const integrationInProgressKeys = [
         'contracted_mrr', 
         'contracted_arr', 
-        'contracted_clients', 
-        'chs', 
-        'accounts_at_risk'
+        'contracted_clients',
     ];
     
     integrationInProgressKeys.forEach(key => {
@@ -211,9 +209,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     // Remove target values for specific metrics
     const noTargetKeys = [
         'live_clients',
-        'contracted_clients', 
-        'chs', 
-        'accounts_at_risk'
+        'contracted_clients',
     ];
     
     noTargetKeys.forEach(key => {
@@ -308,7 +304,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     <div className="p-8 space-y-8 bg-gradient-to-br from-navy-50 to-white min-h-screen">
       <header>
         <h1 className="text-4xl font-black text-navy-900 mb-2 tracking-tight">Executive Dashboard</h1>
-        <p className="text-navy-700 text-lg font-medium">Key performance indicators for the business</p>
+        <p className="text-navy-700 text-lg font-medium">Business KPIs' dashboard is populated with latest data  - 31 Aug</p>
       </header>
 
       {/* -- KPI Card Groups -- */}
