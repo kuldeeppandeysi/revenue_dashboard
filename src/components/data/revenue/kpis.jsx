@@ -31,7 +31,7 @@ export default {
   "expansion_mrr_change": -26,
   "expansion_mrr_target": null,
 
-  "decrease_mrr": -1049105,
+  "decrease_mrr": -1049105.75,
   "decrease_mrr_change": -176,
   "decrease_mrr_target": null,
 

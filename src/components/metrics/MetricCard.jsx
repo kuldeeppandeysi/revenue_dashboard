@@ -29,14 +29,16 @@ export default function MetricCard({
           style: 'currency', 
           currency: currency,
           notation: 'compact',
-          maximumFractionDigits: val > 1000 ? 1 : 0
+          maximumFractionDigits: 1,
+          minimumFractionDigits: 1
         }).format(val);
       case "percentage":
         return `${val.toFixed(1)}%`;
       case "number":
         return new Intl.NumberFormat('en-US', {
           notation: 'compact',
-          maximumFractionDigits: 1
+          maximumFractionDigits: 1,
+          minimumFractionDigits: 1
         }).format(val);
       default:
         return val.toString();
