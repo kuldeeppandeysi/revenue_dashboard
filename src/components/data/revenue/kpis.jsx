@@ -1,59 +1,65 @@
 export default {
-  "live_mrr": 64400000,             // 64.4 Mn INR
-  "live_mrr_change": 0,
-  "live_mrr_target": 64200000,      // 64.2 Mn INR
-  "contracted_mrr": 0,
-  "contracted_mrr_change": 0,
-  "contracted_mrr_target": 0,
-  "live_arr": 772800000,            // 64.4 × 12 = 772.8 Mn INR
-  "live_arr_change": 0,
-  "live_arr_target": 770400000,     // 64.2 × 12 = 770.4 Mn INR
-  "contracted_arr": 0,
-  "contracted_arr_change": 0,
-  "contracted_arr_target": 0,
-  "live_clients": 189,
-  "live_clients_change": 0,
-  "live_clients_target": 0,
-  "contracted_clients": 0,
-  "contracted_clients_change": 0,
-  "contracted_clients_target": 0,
-  "new_business_mrr": 0,
-  "new_business_mrr_change": 0,
-  "new_business_mrr_target": 0,
-  "expansion_mrr": 0,
-  "expansion_mrr_change": 0,
-  "expansion_mrr_target": 0,
-  "net_mrr_churn": 0,
-  "net_mrr_churn_change": 0,
-  "net_mrr_churn_target": 0,
-  "rule_of_80": 0,
-  "rule_of_80_change": 0,
-  "rule_of_80_target": 0,
-  "gm_percent": 67.1,
-  "gm_percent_change": 0,
-  "gm_percent_target": 64.4,
-  "ebitda_percent": -10.6,
-  "ebitda_percent_change": 0,
-  "ebitda_percent_target": -17.2,
-  "nrr": 0,
-  "nrr_change": 0,
-  "nrr_target": 0,
-  "arpa": 0,
-  "arpa_change": 0,
-  "arpa_target": 0,
-  "logo_churn_rate": 0,
-  "logo_churn_rate_change": 0,
-  "logo_churn_rate_target": 0,
-  "headcount": 305,
-  "headcount_change": 0,
-  "headcount_target": 0,
-  "chs": 0,
-  "chs_change": 0,
-  "chs_target": 0,
-  "accounts_at_risk": 0,
-  "accounts_at_risk_change": 0,
-  "accounts_at_risk_target": 0,
-  "mau": 0,
-  "mau_change": 0,
-  "mau_target": 0
+  "live_mrr": 64390521,
+  "live_mrr_change": 6,
+  "live_mrr_target": 64234077,
+
+  "contracted_mrr": null,
+  "contracted_mrr_change": null,
+  "contracted_mrr_target": null,
+
+  "live_arr": 772686256,
+  "live_arr_change": 12.5,
+  "live_arr_target": 770808924,                 
+
+  "contracted_arr": null,
+  "contracted_arr_change": null,
+  "contracted_arr_target": null,
+
+  "live_clients": 216,
+  "live_clients_change": -0.5,
+  "live_clients_target": null,
+
+  "contracted_clients": null,
+  "contracted_clients_change": null,
+  "contracted_clients_target": null,
+
+  "new_business_mrr": 990424.4,
+  "new_business_mrr_change": -57,
+  "new_business_mrr_target": null,
+
+  "expansion_mrr": 3160849,
+  "expansion_mrr_change": -26,
+  "expansion_mrr_target": null,
+
+  "decrease_mrr": -1049105,
+  "decrease_mrr_change": -176,
+  "decrease_mrr_target": null,
+
+  "churn_mrr": -1459215,
+  "churn_mrr_change": -35,
+  "churn_mrr_target": null,
+
+  "rule_of_80": 77,
+  "rule_of_80_change": -2.5,
+  "rule_of_80_target": 80,
+
+  "gm_percent": 67,
+  "gm_percent_change": 4,
+  "gm_percent_target": 64.1,
+
+  "ebitda_percent": -13.2,
+  "ebitda_percent_change": 14.9,
+  "ebitda_percent_target": -17.4,
+
+  "nrr": 101,
+  "nrr_change": -4,
+  "nrr_target": null,
+
+  "arpa": 298104.3,
+  "arpa_change": 6,
+  "arpa_target": null,
+
+  "logo_churn_rate": null,
+  "logo_churn_rate_change": null,
+  "logo_churn_rate_target": null
 };

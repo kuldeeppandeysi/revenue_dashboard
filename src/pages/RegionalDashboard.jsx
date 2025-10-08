@@ -24,10 +24,10 @@ const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
-    { group: 'Clients', title: "# Legal Entities", key: "live_clients", format: "number", icon: Users },
+    { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
     // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
-    { group: 'Health', title: "Customer Health", key: "chs", format: "number", icon: Heart },
-    { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "number", icon: AlertTriangle },
+    { group: 'Health', title: "Locations making Waves", key: "chs", format: "percentage", icon: Heart },
+    { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
     { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
     { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "number", icon: Zap },
     { group: 'Performance', title: "MAU", key: "mau", format: "number", icon: BarChart },
@@ -37,9 +37,9 @@ const kpiCardDefinitions = [
 ];
 
 const trendChartDefinitions = [
-    { key: "live_clients", title: "# Legal Entities", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
+    { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
     { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 100, domain: [90, 120] }, // Bright Green
-    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
+    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 350] }, // Purple
     { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", targetKey: "gm_percent_target", domain: [60, 90] }, // Teal with dynamic target
     { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", targetKey: "ebitda_percent_target", domain: [-20, 20] }, // Red with dynamic target
 ];
@@ -206,6 +206,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                         data={displayTrendData}
                         dataKey={def.key}
                         targetKey={def.targetKey}
+                        xAxisDataKey="label"
                         formatValue={def.format}
                         color={def.color}
                         target={def.target}
