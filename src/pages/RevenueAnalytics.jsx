@@ -86,7 +86,7 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
        <div>
          <h1 className="text-4xl font-black text-navy-900 mb-2 tracking-tight">Revenue Analytics</h1>
-         <p className="text-navy-700 font-semibold text-lg">Deep dive into revenue patterns, cohorts, and growth drivers</p>
+         <p className="text-navy-700 font-semibold text-lg"></p>
        </div>
       
        <div className="flex gap-3">
