@@ -142,7 +142,7 @@ export default function MetricTrendChart({
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <AreaChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+      <AreaChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 40 }}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor={color} stopOpacity={0.4} />
@@ -157,6 +157,9 @@ export default function MetricTrendChart({
           fontSize={12}
           tickLine={false}
           axisLine={false}
+          angle={-45}
+          textAnchor="end"
+          height={60}
         />
         <YAxis
           stroke="#475569"

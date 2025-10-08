@@ -46,7 +46,7 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
     <ResponsiveContainer width="100%" height={400}>
       <LineChart
         data={processedData}
-        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
         <XAxis 
@@ -55,6 +55,9 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
+          angle={-45}
+          textAnchor="end"
+          height={60}
         />
         <YAxis 
           stroke="#475569"

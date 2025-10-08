@@ -38,10 +38,10 @@ const kpiCardDefinitions = [
 
 const trendChartDefinitions = [
     { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
-    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 100, domain: [90, 120] }, // Bright Green
-    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 350] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", targetKey: "gm_percent_target", domain: [60, 90] }, // Teal with dynamic target
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", targetKey: "ebitda_percent_target", domain: [-20, 20] }, // Red with dynamic target
+    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 100, domain: [80, 120] }, // Bright Green
+    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [-120, 350] }, // Purple
+    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", targetKey: "gm_percent_target", domain: [50, 90] }, // Teal with dynamic target
+    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", targetKey: "ebitda_percent_target", domain: [-50, 40] }, // Red with dynamic target
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
