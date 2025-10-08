@@ -118,7 +118,7 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
        <MetricCard title="Churn MRR" value={displayKpis.churn_mrr} target={displayKpis.churn_mrr_target} change={displayKpis.churn_mrr_change} format="currency" currency={currency} loading={loading} isInverse={true} />
        <MetricCard
-           title="ARPA"
+           title="Monthly ARPA"
            tooltipText="Average Revenue Per Account"
            value={displayKpis.arpa}
            target={displayKpis.arpa_target}
