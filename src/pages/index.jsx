@@ -25,7 +25,7 @@ import DeveloperDocumentation from "./DeveloperDocumentation";
 
 import DataUploader from "./DataUploader";
 
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
 const PAGES = {
     
@@ -119,6 +119,9 @@ function PagesContent() {
                 <Route path="/DeveloperDocumentation" element={<DeveloperDocumentation currency={currency} />} />
                 
                 <Route path="/DataUploader" element={<DataUploader currency={currency} />} />
+                
+                {/* Catch-all route - redirect to dashboard */}
+                <Route path="*" element={<Navigate to="/" replace />} />
                 
             </Routes>
         </Layout>
