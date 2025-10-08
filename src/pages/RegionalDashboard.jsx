@@ -67,8 +67,14 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         if (currency === 'USD') {
             const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
             currencyKeys.forEach(key => {
+                // Convert main values
                 if (converted[key] !== undefined) {
                     converted[key] = converted[key] / USD_TO_INR_RATE;
+                }
+                // Convert target values
+                const targetKey = `${key}_target`;
+                if (converted[targetKey] !== undefined && converted[targetKey] !== null) {
+                    converted[targetKey] = converted[targetKey] / USD_TO_INR_RATE;
                 }
             });
         }

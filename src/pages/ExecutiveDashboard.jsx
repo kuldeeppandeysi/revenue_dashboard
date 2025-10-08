@@ -44,8 +44,8 @@ const trendChartDefinitions = [
     { key: "live_clients", title: "# Legal Entities", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
     { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 110, domain: [90, 130] }, // Bright Green
     { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 80, domain: [60, 90] }, // Teal
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 0, domain: [-20, 20] }, // Red
+    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 64.4, domain: [60, 90] }, // Teal
+    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: 17.2, domain: [-20, 20] }, // Red
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
@@ -183,8 +183,14 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     if (currency === 'USD') {
         const currencyKeys = ['live_mrr', 'live_arr', 'contracted_mrr', 'contracted_arr'];
         currencyKeys.forEach(key => {
+            // Convert main values
             if (converted[key] !== undefined && converted[key] !== null) {
                 converted[key] = converted[key] / USD_TO_INR_RATE;
+            }
+            // Convert target values
+            const targetKey = `${key}_target`;
+            if (converted[targetKey] !== undefined && converted[targetKey] !== null) {
+                converted[targetKey] = converted[targetKey] / USD_TO_INR_RATE;
             }
         });
     }
