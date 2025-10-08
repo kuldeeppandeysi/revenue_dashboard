@@ -40,12 +40,19 @@ const kpiCardDefinitions = [
     { group: 'People', title: "Headcount", key: "headcount", format: "number", icon: Briefcase },
 ];
 
-const trendChartDefinitions = [
-    { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
-    { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 0, domain: [90, 130] }, // Bright Green
-    { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
-    { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 64.1, domain: [60, 90] }, // Teal
-    { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: -17.4, domain: [-20, 20] }, // Red
+// const trendChartDefinitions = [
+//     { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
+//     { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", target: 0, domain: [90, 130] }, // Bright Green
+//     { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple
+//     { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", target: 64.1, domain: [60, 90] }, // Teal
+//     { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444", target: -17.4, domain: [-20, 20] }, // Red
+// ];
+ const trendChartDefinitions = [
+  { key: "live_clients", title: "# Live Customers", format: (v) => v.toLocaleString(), color: "#10b981" }, // Green
+  { key: "nrr", title: "NRR", format: (v) => `${v.toFixed(1)}%`, color: "#22c55e", targetKey: "target_nrr", domain: [90, 130] }, // Bright Green (uses monthly target_nrr)
+  { key: "rule_of_80", title: "Rule of 80", format: (v) => v.toFixed(1), color: "#8b5cf6", target: 80, domain: [40, 100] }, // Purple (still a static line unless you add target_rule_of_80)
+  { key: "gm_percent", title: "GM %", format: (v) => `${v.toFixed(1)}%`, color: "#14b8a6", targetKey: "target_gm_percent", domain: [60, 90] }, // Teal
+  { key: "ebitda_percent", title: "EBITDA %", format: (v) => `${v.toFixed(1)}%`, color: "#ef4444",targetKey: "target_ebitda_percent", domain: [-60, 20] }, // Red (wider domain to cover -47.1%)
 ];
 
 const GranularityButton = ({granularity, setGranularity, value, children}) => (
@@ -350,6 +357,19 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
             <h3 className="text-lg font-bold text-navy-800 mb-4">ARR Performance</h3>
             <CombinedArrChart data={displayTrendData} currency={currency} />
           </div>
+          {/* {trendChartDefinitions.map(def => (
+            <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
+              <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
+              <MetricTrendChart 
+                data={displayTrendData}
+                dataKey={def.key}
+                formatValue={def.format}
+                color={def.color}
+                target={def.target}
+                yAxisDomain={def.domain}
+              />
+            </div>
+          ))} */}
           {trendChartDefinitions.map(def => (
             <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
               <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
@@ -358,7 +378,8 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                 dataKey={def.key}
                 formatValue={def.format}
                 color={def.color}
-                //target={def.target}
+                target={def.target}
+                targetKey={def.targetKey}     // ✅ Added
                 yAxisDomain={def.domain}
               />
             </div>
