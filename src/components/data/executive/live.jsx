@@ -27,7 +27,7 @@ export default {
   "nrr_change": -3.8,
   "nrr_target": null,
   "rule_of_80": 77,
-  "rule_of_80_change": -2.6,
+  "rule_of_80_change": -2.1,
   "rule_of_80_target": 80,
   "mau": 16647,
   "mau_change": -15,
@@ -40,5 +40,5 @@ export default {
   "ebitda_percent_target": -17.4,
   "headcount": 305,
   "headcount_change": -4.69,
-  "headcount_target": 0
+  "headcount_target": null
 };

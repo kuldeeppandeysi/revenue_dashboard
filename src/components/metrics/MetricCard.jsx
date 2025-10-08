@@ -14,7 +14,8 @@ export default function MetricCard({
   loading = false,
   format = "number",
   currency = "USD", // New prop
-  categoryIcon: CategoryIcon // New prop for icon
+  categoryIcon: CategoryIcon, // New prop for icon
+  isInverse = false // New prop: true for metrics where increase is bad (like churn)
 }) {
   const formatValue = (val) => {
     if (loading || val === null || val === undefined) return "—";
@@ -44,7 +45,11 @@ export default function MetricCard({
 
   const getTrendIcon = () => {
     if (change === null || change === undefined) return null;
-    return change >= 0 ? 
+    
+    // For inverse metrics (like churn), flip the logic
+    const isPositiveTrend = isInverse ? change <= 0 : change >= 0;
+    
+    return isPositiveTrend ? 
       <TrendingUp className="w-4 h-4 text-emerald-600" /> : 
       <TrendingDown className="w-4 h-4 text-red-600" />;
   };
@@ -80,7 +85,9 @@ export default function MetricCard({
               <div className="flex items-center gap-1.5 pb-1">
                 {getTrendIcon()}
                 <span className={`text-base font-bold ${
-                  change >= 0 ? 'text-emerald-700' : 'text-red-700'
+                  isInverse ? 
+                    (change <= 0 ? 'text-emerald-700' : 'text-red-700') :
+                    (change >= 0 ? 'text-emerald-700' : 'text-red-700')
                 }`}>
                   {change > 0 ? '+' : ''}{change.toFixed(1)}%
                 </span>

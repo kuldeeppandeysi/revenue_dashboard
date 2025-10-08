@@ -1,6 +1,6 @@
 export default {
   "live_mrr": 64390521,
-  "live_mrr_change": 6,
+  "live_mrr_change": 5.5,
   "live_mrr_target": 64234077,
 
   "contracted_mrr": null,
@@ -8,7 +8,7 @@ export default {
   "contracted_mrr_target": null,
 
   "live_arr": 772686256,
-  "live_arr_change": 12.5,
+  "live_arr_change": 5.5,
   "live_arr_target": 770808924,                 
 
   "contracted_arr": null,
@@ -35,15 +35,15 @@ export default {
   "decrease_mrr_change": -176,
   "decrease_mrr_target": null,
 
-  "churn_mrr": -1459215,
-  "churn_mrr_change": -35,
+  "churn_mrr": 1459215,
+  "churn_mrr_change": 35,
   "churn_mrr_target": null,
 
   "rule_of_80": 77,
   "rule_of_80_change": -2.5,
   "rule_of_80_target": 80,
 
-  "gm_percent": 67,
+  "gm_percent": 67.1,
   "gm_percent_change": 4,
   "gm_percent_target": 64.1,
 

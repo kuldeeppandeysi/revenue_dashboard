@@ -102,7 +102,7 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
        <MetricCard title="Live MRR" value={displayKpis.live_mrr} target={displayKpis.live_mrr_target} change={displayKpis.live_mrr_change} format="currency" currency={currency} loading={loading} />
        <MetricCard title="Live ARR"  value={displayKpis.live_arr} target={displayKpis.live_arr_target} change={displayKpis.live_arr_change} format="currency" currency={currency} loading={loading} />
-       <MetricCard title="Live Clients" value={displayKpis.live_clients} target={displayKpis.live_clients_target} change={displayKpis.live_clients_change} format="number" loading={loading} />
+       <MetricCard title="Live Customers" value={displayKpis.live_clients} target={displayKpis.live_clients_target} change={displayKpis.live_clients_change} format="number" loading={loading} />
      </div>
 
 
@@ -116,7 +116,7 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
 
      {/* Additional Metrics */}
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-       <MetricCard title="Churn MRR" value={displayKpis.churn_mrr} target={displayKpis.churn_mrr_target} change={displayKpis.churn_mrr_change} format="currency" currency={currency} loading={loading} />
+       <MetricCard title="Churn MRR" value={displayKpis.churn_mrr} target={displayKpis.churn_mrr_target} change={displayKpis.churn_mrr_change} format="currency" currency={currency} loading={loading} isInverse={true} />
        <MetricCard
            title="ARPA"
            tooltipText="Average Revenue Per Account"
