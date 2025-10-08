@@ -71,7 +71,7 @@ export default [
     "accounts_at_risk_change": 0,
     "accounts_at_risk_target": 0,
     "nrr": 101,
-    "nrr_change": 0,
+    "nrr_change": -6.5,
     "nrr_target": null,
     "rule_of_80": 3437,
     "rule_of_80_change": -15553,
