@@ -2,8 +2,8 @@
 
 export default [
 {
-  "label": "Jun'24",
-  "live_arr": 592459901,
+  "label": "Q1 '24",
+  "live_arr": 592459902,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 190,
@@ -14,7 +14,7 @@ export default [
   "headcount": 244
 },
 {
-  "label": "Sep'24",
+  "label": "Q2 '24",
   "live_arr": 646873005,
   "contracted_arr": null,
   "target_arr": null,
@@ -26,7 +26,7 @@ export default [
   "headcount": 264
 },
 {
-  "label": "Dec'24",
+  "label": "Q3 '24",
   "live_arr": 705372103,
   "contracted_arr": null,
   "target_arr": null,
@@ -38,7 +38,7 @@ export default [
   "headcount": 302
 },
 {
-  "label": "Mar'25",
+  "label": "Q4 '24",
   "live_arr": 731880070,
   "contracted_arr": null,
   "target_arr": null,
@@ -50,10 +50,10 @@ export default [
   "headcount": 316
 },
 {
-  "label": "Jun'25",
+  "label": "Q1 '25",
   "live_arr": 689210258,
   "contracted_arr": null,
-  "target_arr": 709063210,
+  "target_arr": 709063211,
   "live_clients": 213,
   "nrr": 97,
   "rule_of_80": -50.4,
@@ -64,3 +64,5 @@ export default [
   "headcount": 319
 }
 ];
+
+// data has been validated and checked

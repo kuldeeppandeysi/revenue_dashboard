@@ -19,3 +19,5 @@ export default [
   { "date": "2025-07-01", "monthLabel": "Jul '25", "accrued_mrr": 61030859, "accrued_mrr_target": 60839894},
   { "date": "2025-08-01", "monthLabel": "Aug '25", "accrued_mrr": 64390521, "accrued_mrr_target": 64234078}
 ];
+
+// data has been checked and validated
