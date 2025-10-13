@@ -14,6 +14,7 @@ import RevenueTrendChart from '../components/charts/RevenueTrendChart';
 // --- DATA IMPORTS ---
 import kpis from '@/components/data/revenue/kpis.jsx';
 import monthlyChangesData from '@/components/data/revenue/monthlyChanges.jsx';
+import churnData from '@/components/data/revenue/churn_data.jsx';
 
 
 const USD_TO_INR_RATE = 84.5;
@@ -70,6 +71,15 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
      churn: item.churn / USD_TO_INR_RATE,
    }));
  }, [currency]);
+
+ const displayChurnData = useMemo(() => {
+   // Transform churn data to match the expected format for RevenueTrendChart
+   return churnData.map(item => ({
+     month: item.Month,
+     churnBrandCount: item["Brand count"]
+   }));
+ }, []);
+
   const formatCurrency = (value) => {
    if (value === null || value === undefined) return "—";
    return new Intl.NumberFormat('en-US', {
@@ -160,6 +170,14 @@ export default function RevenueAnalytics({ currency = 'INR' }) {
          dataKey="churn"
          color="#ef4444"
          currency={currency}
+       />
+       <RevenueTrendChart
+         title="Churn Brand Count"
+         data={displayChurnData}
+         dataKey="churnBrandCount"
+         color="#dc2626"
+         currency={null}
+         isCount={true}
        />
      </section>
    </div>

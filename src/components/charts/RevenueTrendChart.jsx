@@ -2,11 +2,16 @@ import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 
-export default function RevenueTrendChart({ title, data, dataKey, color, currency = 'INR' }) {
+export default function RevenueTrendChart({ title, data, dataKey, color, currency = 'INR', isCount = false }) {
 
 
- const formatCurrency = (value) => {
+ const formatValue = (value) => {
    if (value === null || value === undefined) return "—";
+   
+   if (isCount) {
+     return new Intl.NumberFormat('en-US').format(value);
+   }
+   
    return new Intl.NumberFormat('en-US', {
      style: 'currency',
      currency: currency,
@@ -22,7 +27,7 @@ export default function RevenueTrendChart({ title, data, dataKey, color, currenc
        <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-navy-300">
          <p className="font-bold text-navy-800 mb-1">{label}</p>
          <p className="font-bold text-lg" style={{ color }}>
-           {formatCurrency(payload[0].value)}
+           {formatValue(payload[0].value)}
          </p>
        </div>
      );
@@ -61,7 +66,7 @@ export default function RevenueTrendChart({ title, data, dataKey, color, currenc
            fontSize={12}
            tickLine={false}
            axisLine={false}
-           tickFormatter={formatCurrency}
+           tickFormatter={formatValue}
          />
          <Tooltip content={<CustomTooltip />} />
          <Area
