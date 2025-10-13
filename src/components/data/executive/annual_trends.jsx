@@ -26,7 +26,7 @@ export default [
 "headcount": 316
 },
 {
-"label": "FY26",
+"label": "Aug'25",
 "live_arr": 772686257,
 "contracted_arr": null,
 "accrued_mrr": 225358841,

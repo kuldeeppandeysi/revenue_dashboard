@@ -1,9 +1,9 @@
 // Helper function to aggregate accrued data by financial year
 export function getAnnualAccruedData(monthlyData) {
-  // Define financial years: FY25 = Apr 2024 - Mar 2025, FY26 = Apr 2025 - Aug 2025
+  // Define financial years: FY25 = Apr 2024 - Mar 2025, Aug'25 = Apr 2025 - Aug 2025
   const years = [
     { label: "FY25", start: new Date("2024-04-01"), end: new Date("2025-03-31") },
-    { label: "FY26", start: new Date("2025-04-01"), end: new Date("2025-08-31") }
+    { label: "Aug'25", start: new Date("2025-04-01"), end: new Date("2025-08-31") }
   ];
   return years.map(y => {
     const filtered = monthlyData.filter(row => {

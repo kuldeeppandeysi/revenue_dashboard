@@ -102,7 +102,7 @@ function getAnnualAccruedMRR(data) {
       accrued_mrr_target: fy25.length > 0 ? fy25.reduce((sum, r) => sum + (r.accrued_mrr_target || 0), 0) : null
     },
     {
-      label: "FY26",
+      label: "Aug'25",
       accrued_mrr: fy26.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
       accrued_mrr_target: fy26.length > 0 ? fy26.reduce((sum, r) => sum + (r.accrued_mrr_target || 0), 0) : null
     }
