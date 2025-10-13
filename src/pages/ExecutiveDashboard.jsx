@@ -732,6 +732,23 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                             </span>
                           </div>
                         ))}
+                        {/* Show target value explicitly if present */}
+                        {(() => {
+                          // Find the target value in the payload
+                          const targetEntry = payload.find(e => e.dataKey === (isGM ? 'target_gm_percent' : isEBITDA ? 'target_ebitda_percent' : null));
+                          if (targetEntry && targetEntry.value !== null && targetEntry.value !== undefined) {
+                            return (
+                              <div className="flex items-center justify-between gap-4 mt-2">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#94a3b8' }}></div>
+                                  <span className="text-sm text-navy-700">Target</span>
+                                </div>
+                                <span className="font-bold text-navy-900">{targetEntry.value.toFixed(1)}%</span>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
                     </div>
                   );
@@ -757,17 +774,33 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                   </h3>
                   <MetricTrendChart 
                     data={displayTrendData.map(d => {
-                      // Only show target for Jun'25, null for others
-                      if ((isGM || isEBITDA) && d.label !== "Jun'25") {
-                        return { ...d, [def.targetKey]: null };
+                      // Only show target for Apr'25 to Aug'25, null for others (monthly filter)
+                      if ((isGM || isEBITDA) && granularity === 'monthly') {
+                        const validLabels = ["Apr '25", "May '25", "Jun '25", "Jul '25", "Aug '25"];
+                        if (!validLabels.includes(d.monthLabel)) {
+                          return {
+                            ...d,
+                            target_gm_percent: isGM ? null : d.target_gm_percent,
+                            target_ebitda_percent: isEBITDA ? null : d.target_ebitda_percent
+                          };
+                        }
                       }
+                      // For quarterly, keep only Jun'25
+                      if ((isGM || isEBITDA) && granularity === 'quarterly' && d.label !== "Jun'25") {
+                        return {
+                          ...d,
+                          target_gm_percent: isGM ? null : d.target_gm_percent,
+                          target_ebitda_percent: isEBITDA ? null : d.target_ebitda_percent
+                        };
+                      }
+                      // For annual, use the field directly (do not null out)
                       return d;
                     })}
                     dataKey={def.key}
                     formatValue={def.format}
                     color={def.color}
                     target={def.target}
-                    targetKey={def.targetKey}
+                    targetKey={isGM ? 'target_gm_percent' : isEBITDA ? 'target_ebitda_percent' : def.targetKey}
                     yAxisDomain={def.domain}
                     xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : undefined}
                     tooltip={isGM || isEBITDA ? CustomTooltip : undefined}
