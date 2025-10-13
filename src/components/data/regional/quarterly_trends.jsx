@@ -15,7 +15,7 @@ export default [
   "target_arr": null,
   "live_clients": 182,
   "nrr": 87,
-  "rule_of_80": 55.9,
+  "rule_of_80": null,
   "gm_percent": 73.5,
   "ebitda_percent": -15.3,
   "headcount": 238
@@ -29,7 +29,7 @@ export default [
   "target_arr": null,
   "live_clients": 187,
   "nrr": 98,
-  "rule_of_80": 64.4,
+  "rule_of_80": 43,
   "gm_percent": 76.1,
   "ebitda_percent": -7.6,
   "headcount": 259
@@ -43,7 +43,7 @@ export default [
   "target_arr": null,
   "live_clients": 194,
   "nrr": 99,
-  "rule_of_80": 74.1,
+  "rule_of_80": 16,
   "gm_percent": 68.8,
   "ebitda_percent": 8.5,
   "headcount": 293
@@ -57,7 +57,7 @@ export default [
   "target_arr": null,
   "live_clients": 196,
   "nrr": 92,
-  "rule_of_80": 33.0,
+  "rule_of_80": -23,
   "gm_percent": 57.4,
   "ebitda_percent": -25.9,
   "headcount": 300
@@ -71,7 +71,7 @@ export default [
   "target_arr": 681969846,
   "live_clients": 202,
   "nrr": 97,
-  "rule_of_80": 28.3,
+  "rule_of_80": -4,
   "gm_percent": 58.2,
   "ebitda_percent": -15.0,
   "gm_target_percent": 55.3,
