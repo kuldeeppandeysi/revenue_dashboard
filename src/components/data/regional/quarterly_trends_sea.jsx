@@ -2,8 +2,9 @@
 export default [
     {
   "country": "SEA",
-  "label": "Q1 '24",
+  "label": "Jun'24",
   "live_arr": 22518028,
+  "accrued_mrr": 5758673,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 8,
@@ -15,8 +16,9 @@ export default [
 },
 {
   "country": "SEA",
-  "label": "Q2 '24",
+  "label": "Sep'24",
   "live_arr": 23653846,
+  "accrued_mrr": 5884297,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 8,
@@ -28,8 +30,9 @@ export default [
 },
 {
   "country": "SEA",
-  "label": "Q3 '24",
+  "label": "Dec'24",
   "live_arr": 59951956,
+  "accrued_mrr": 8360869,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 10,
@@ -41,8 +44,9 @@ export default [
 },
 {
   "country": "SEA",
-  "label": "Q4 '24",
+  "label": "Mar'25",
   "live_arr": 59066150,
+  "accrued_mrr": 15148317,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 10,
@@ -54,8 +58,9 @@ export default [
 },
 {
   "country": "SEA",
-  "label": "Q1 '25",
+  "label": "Jun'25",
   "live_arr": 32032125,
+  "accrued_mrr": 4517145,
   "contracted_arr": null,
   "target_arr": 27093364,
   "live_clients": 11,

@@ -8,8 +8,9 @@ export default [
 // India data
 {
   "country": "IN",
-  "label": "Q1 '24",
+  "label": "Jun'24",
   "live_arr": 569941874,
+  "accrued_mrr": 139659403,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 182,
@@ -21,8 +22,9 @@ export default [
 },
 {
   "country": "IN",
-  "label": "Q2 '24",
+  "label": "Sep'24",
   "live_arr": 623219159,
+  "accrued_mrr": 154776417,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 187,
@@ -34,8 +36,9 @@ export default [
 },
 {
   "country": "IN",
-  "label": "Q3 '24",
+  "label": "Dec'24",
   "live_arr": 645420146,
+  "accrued_mrr": 157415252,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 194,
@@ -47,8 +50,9 @@ export default [
 },
 {
   "country": "IN",
-  "label": "Q4 '24",
+  "label": "Mar'25",
   "live_arr": 672813920,
+  "accrued_mrr": 158728215,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 196,
@@ -60,8 +64,9 @@ export default [
 },
 {
   "country": "IN",
-  "label": "Q1 '25",
+  "label": "Jun'25",
   "live_arr": 657178132,
+  "accrued_mrr": 163088519,
   "contracted_arr": null,
   "target_arr": 681969846,
   "live_clients": 202,

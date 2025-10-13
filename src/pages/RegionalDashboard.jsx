@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import MetricCard from '../components/metrics/MetricCard';
 import MetricTrendChart from '../components/charts/MetricTrendChart';
 import CombinedArrChart from '../components/charts/CombinedArrChart';
+import CombinedAccruedMrrChart from '../components/charts/CombinedAccruedMrrChart';
 import HeadcountChart from '../components/charts/HeadcountChart';
 import { getQuarter, getYear, parseISO } from 'date-fns';
 import { DollarSign, Users, Heart, Zap, BarChart, Briefcase, AlertTriangle, Percent } from 'lucide-react';
@@ -23,7 +24,7 @@ const USD_TO_INR_RATE = 84.5;
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Accrued MRR", key: "accrued_mrr", format: "currency", icon: DollarSign },
+    { group: 'Revenue', title: "Accrued MRR YTD", key: "accrued_mrr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
     { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
@@ -115,7 +116,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         if (currency === 'INR') {
             return aggregatedTrendData;
         }
-        const currencyKeys = ['live_arr', 'target_arr']; // Removed contracted_arr
+        const currencyKeys = ['live_arr', 'target_arr', 'accrued_mrr', 'accrued_mrr_target']; // Added accrued MRR fields
         return aggregatedTrendData.map(item => {
             const newItem = { ...item };
             currencyKeys.forEach(key => {
@@ -201,6 +202,10 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                   <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
                     <h3 className="text-lg font-bold text-navy-800 mb-4">ARR Performance</h3>
                     <CombinedArrChart data={displayTrendData} currency={currency} />
+                  </div>
+                  <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
+                    <h3 className="text-lg font-bold text-navy-800 mb-4">Accrued MRR Performance</h3>
+                    <CombinedAccruedMrrChart data={displayTrendData} currency={currency} />
                   </div>
                   {trendChartDefinitions.map(def => (
                     <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
