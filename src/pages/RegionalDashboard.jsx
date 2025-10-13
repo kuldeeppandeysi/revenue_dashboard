@@ -251,8 +251,11 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                           // Custom chart for both monthly and quarterly
                           const chartData = displayTrendData;
                           const formatAccruedValue = (v) => {
-                              if (currency === 'USD') return `$${(v / 1e6).toFixed(1)}M`;
-                              return `₹${(v / 1e6).toFixed(1)}M`;
+                              if (v === null || v === undefined) return '-';
+                              const absVal = Math.abs(v);
+                              const sign = v < 0 ? '-' : '';
+                              if (currency === 'USD') return `${sign}$${(absVal / 1e6).toFixed(1)}M`;
+                              return `${sign}₹${(absVal / 1e6).toFixed(1)}M`;
                           };
                           const CustomAccruedTooltip = ({ active, payload, label }) => {
                               if (active && payload && payload.length) {
@@ -277,11 +280,18 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                               }
                               return null;
                           };
-                          // Calculate max for Y-axis
-                          const maxY = Math.max(...chartData.map(d => Math.max(d.accrued_mrr || 0, d.accrued_mrr_target || 0)));
-                          const yAxisDomain = currency === 'USD'
-                              ? [0, Math.ceil(maxY * 1.1)]
-                              : [0, Math.ceil(maxY * 1.1)];
+                          // Calculate min and max for Y-axis, allowing negative values
+                          const minY = Math.min(...chartData.map(d => {
+                              const vals = [d.accrued_mrr, d.accrued_mrr_target].filter(v => v !== undefined && v !== null);
+                              return vals.length ? Math.min(...vals) : 0;
+                          }));
+                          const maxY = Math.max(...chartData.map(d => {
+                              const vals = [d.accrued_mrr, d.accrued_mrr_target].filter(v => v !== undefined && v !== null);
+                              return vals.length ? Math.max(...vals) : 0;
+                          }));
+                          // Add padding
+                          const padding = (maxY - minY) * 0.1 || 10;
+                          const yAxisDomain = [Math.floor(minY - padding), Math.ceil(maxY + padding)];
                           // Render chart
                           return (
                               <ResponsiveContainer width="100%" height={400}>

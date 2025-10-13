@@ -7,14 +7,11 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
   const processedData = data;
 
   const formatValue = (v) => {
-    if (!v && v !== 0) return ''; // Handle null, undefined, NaN, but allow 0
-    const options = {
-        style: 'currency',
-        currency: currency,
-        notation: 'compact',
-        maximumFractionDigits: 1
-    };
-    return new Intl.NumberFormat('en-US', options).format(v);
+  if (v === null || v === undefined || isNaN(v)) return '';
+  const absVal = Math.abs(v);
+  const sign = v < 0 ? '-' : '';
+  if (currency === 'USD') return `${sign}$${(absVal / 1e6).toFixed(1)}M`;
+  return `${sign}₹${(absVal / 1e6).toFixed(1)}M`;
   }
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -62,7 +59,14 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
           tickLine={true}
           axisLine={true}
           tickFormatter={formatValue}
-          domain={currency === 'USD' ? [5000000, 'auto'] : [5000000 * 84.5, 'auto']}
+          domain={(() => {
+            const values = processedData.flatMap(d => [d.live_arr, d.target_arr].filter(v => v !== undefined && v !== null));
+            if (values.length === 0) return [0, 'auto'];
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const padding = (max - min) * 0.1 || 10;
+            return [Math.floor(min - padding), Math.ceil(max + padding)];
+          })()}
         />
         <Tooltip content={<CustomTooltip />} />
         <Legend 
