@@ -55,7 +55,7 @@ export default [
     "live_arr_change": 34.78,
     "live_arr_target": 42249650,
     "accrued_mrr": 10953467, // PG_SB_Data_Field
-    "accrued_mrr_target": 7151350,
+    "accrued_mrr_target": 7151350, // PG_SB_Data_Field
     "contracted_mrr": null,
     "contracted_mrr_change": null,
     "contracted_mrr_target": null,

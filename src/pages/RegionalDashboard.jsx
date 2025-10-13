@@ -13,7 +13,8 @@ import { DollarSign, Users, Heart, Zap, BarChart, Briefcase, AlertTriangle, Perc
 // --- DATA IMPORTS ---
 import regionalLiveKpis from '@/components/data/regional/live.jsx';
 import monthlyTrendData from '@/components/data/regional/trends.jsx';
-import quarterlyTrendData from '@/components/data/regional/trends_quarterly.jsx';
+import quarterlyTrendDataIndia from '@/components/data/regional/quarterly_trends.jsx';
+import quarterlyTrendDataSEA from '@/components/data/regional/quarterly_trends_sea.jsx';
 import annualTrendData from '@/components/data/regional/trends_annual.jsx';
 
 // --- CURRENCY CONVERSION ---
@@ -22,6 +23,7 @@ const USD_TO_INR_RATE = 84.5;
 const kpiCardDefinitions = [
     { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
     { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
+    { group: 'Revenue', title: "Accrued MRR", key: "accrued_mrr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
     // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
     { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
@@ -65,7 +67,7 @@ export default function RegionalDashboard({ currency = 'INR' }) {
         
         // Convert currency for USD
         if (currency === 'USD') {
-            const currencyKeys = ['live_mrr', 'live_arr']; // Removed contracted keys
+            const currencyKeys = ['live_mrr', 'live_arr', 'accrued_mrr']; // Removed contracted keys, added accrued_mrr
             currencyKeys.forEach(key => {
                 // Convert main values
                 if (converted[key] !== undefined) {
@@ -96,7 +98,8 @@ export default function RegionalDashboard({ currency = 'INR' }) {
     const aggregatedTrendData = useMemo(() => {
         let sourceData;
         if (granularity === 'quarterly') {
-            sourceData = quarterlyTrendData;
+            // Use country-specific quarterly data
+            sourceData = selectedCountry === 'IN' ? quarterlyTrendDataIndia : quarterlyTrendDataSEA;
         } else if (granularity === 'annual') {
             sourceData = annualTrendData;
         } else { // monthly
@@ -186,8 +189,8 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
-                        {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton> */}
-                        {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
+                        <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
+                        <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Yearly</GranularityButton>
                     </div>
                 </div>
             </div>
