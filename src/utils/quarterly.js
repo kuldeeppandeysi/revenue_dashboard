@@ -37,7 +37,9 @@ export function getQuarterlyAccruedData(monthlyData) {
     if (!grouped[label]) grouped[label] = [];
     grouped[label].push(row);
   });
-  return Object.entries(grouped).map(([label, arr]) => {
+  return Object.entries(grouped)
+    .filter(([label, arr]) => label !== "Sep'25") // Remove Sep'25 from quarterly view
+    .map(([label, arr]) => {
     // Sum accrued_mrr and accrued_mrr_target for the quarter
     const sumAccruedMrr = arr.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0);
     // Sum targets if at least one value is not null

@@ -1,6 +1,6 @@
 export default [
 {
-"label": "2023",
+"label": "FY24",
 "live_arr": 590789796,
 "contracted_arr": null,
 "accrued_mrr": null,
@@ -13,7 +13,7 @@ export default [
 "headcount": null
 },
 {
-"label": "2024",
+"label": "FY25",
 "live_arr": 731880070,
 "contracted_arr": null,
 "accrued_mrr": 645731342,
@@ -26,7 +26,7 @@ export default [
 "headcount": 316
 },
 {
-"label": "2025",
+"label": "Aug'25",
 "live_arr": 772686257,
 "contracted_arr": null,
 "accrued_mrr": 289749363,

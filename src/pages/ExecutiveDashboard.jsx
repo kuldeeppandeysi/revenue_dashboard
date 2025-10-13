@@ -48,9 +48,17 @@ function getAnnualCollectionsData(data) {
     const date = new Date(row.date);
     let fy;
     if (date.getMonth() >= 3) {
-      fy = `FY ${String(date.getFullYear()+1).slice(-2)}`;
+      const fyYear = date.getFullYear() + 1;
+      if (fyYear === 2024) fy = "FY24";
+      else if (fyYear === 2025) fy = "FY25";
+      else if (fyYear === 2026) fy = "Aug'25";
+      else fy = `FY${String(fyYear).slice(-2)}`;
     } else {
-      fy = `FY ${String(date.getFullYear()).slice(-2)}`;
+      const fyYear = date.getFullYear();
+      if (fyYear === 2024) fy = "FY24";
+      else if (fyYear === 2025) fy = "FY25";
+      else if (fyYear === 2026) fy = "Aug'25";
+      else fy = `FY${String(fyYear).slice(-2)}`;
     }
     if (!years[fy]) years[fy] = [];
     years[fy].push(row);
@@ -341,7 +349,11 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
           const endMonth = endMonths[quarter - 1];
           key = `${endMonth}'${String(year).slice(-2)}`;
         } else { // annual
-          key = getYear(date).toString();
+          const year = getYear(date);
+          if (year === 2023) key = "FY24";
+          else if (year === 2024) key = "FY25";
+          else if (year === 2025) key = "Aug'25";
+          else key = year.toString();
         }
         
         if (!acc[key]) acc[key] = [];
@@ -473,10 +485,12 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                   <span className="w-3 h-3 rounded-full" style={{ background: '#6366f1', display: 'inline-block' }}></span>
                   <span className="text-sm font-medium text-navy-700">Accrued MRR</span>
                 </span>
-                <span className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ background: '#94a3b8', display: 'inline-block' }}></span>
-                  <span className="text-sm font-medium text-navy-700">Accrued MRR Target</span>
-                </span>
+                {granularity !== 'annual' && (
+                  <span className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full" style={{ background: '#94a3b8', display: 'inline-block' }}></span>
+                    <span className="text-sm font-medium text-navy-700">Accrued MRR Target</span>
+                  </span>
+                )}
               </span>
             </h3>
             {(() => {
@@ -548,15 +562,17 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                       strokeWidth={3} 
                       dot={false}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="accrued_mrr_target" 
-                      name="Accrued MRR Target" 
-                      stroke="#94a3b8" 
-                      strokeDasharray="5 5"
-                      strokeWidth={2} 
-                      dot={false}
-                    />
+                    {granularity !== 'annual' && (
+                      <Line 
+                        type="monotone" 
+                        dataKey="accrued_mrr_target" 
+                        name="Accrued MRR Target" 
+                        stroke="#94a3b8" 
+                        strokeDasharray="5 5"
+                        strokeWidth={2} 
+                        dot={false}
+                      />
+                    )}
                   </LineChart>
                 </ResponsiveContainer>
               );
@@ -585,24 +601,24 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                       ...row,
                       TotalOutstanding: row["Total Outstanding"]
                     }));
-                    // FY 25: Apr 2024 - Mar 2025
-                    // FY 26: Apr 2025 - Aug 2025
+                    // FY25: Apr 2024 - Mar 2025
+                    // Aug'25: Apr 2025 - Aug 2025
                     const years = [
                       {
-                        label: "FY 25",
+                        label: "FY25",
                         months: [
                           "Apr-2024", "May-2024", "Jun-2024", "Jul-2024", "Aug-2024", "Sep-2024",
                           "Oct-2024", "Nov-2024", "Dec-2024", "Jan-2025", "Feb-2025", "Mar-2025"
                         ]
                       },
                       {
-                        label: "FY 26",
+                        label: "Aug'25",
                         months: ["Apr-2025", "May-2025", "Jun-2025", "Jul-2025", "Aug-2025"]
                       }
                     ];
                     chartData = years.map(y => {
-                      // For FY 25, show Mar-2025 values; for FY 26, show Aug-2025 values
-                      const endMonth = y.label === "FY 25" ? "Mar-2025" : "Aug-2025";
+                      // For FY25, show Mar-2025 values; for Aug'25, show Aug-2025 values
+                      const endMonth = y.label === "FY25" ? "Mar-2025" : "Aug-2025";
                       const endMonthRow = monthly.find(row => row.label === endMonth);
                       if (!endMonthRow) return { label: y.label, Unbilled: 0, AR: 0 };
                       

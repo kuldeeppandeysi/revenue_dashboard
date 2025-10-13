@@ -3,11 +3,8 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function CombinedArrChart({ data, currency = 'USD' }) {
-  // Filter data to only show target_arr from April 2025 onwards
-  const processedData = data.map(item => ({
-    ...item,
-    target_arr: item.date && item.date >= '2025-04-01' ? item.target_arr : null
-  }));
+  // Use all target_arr data without filtering
+  const processedData = data;
 
   const formatValue = (v) => {
     if (!v && v !== 0) return ''; // Handle null, undefined, NaN, but allow 0
