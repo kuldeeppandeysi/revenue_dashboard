@@ -18,6 +18,8 @@
 //   { "date": "2025-08-01", "monthLabel": "Aug '25", "live_arr": 772689282.0, "contracted_arr": null, "target_arr": 770809492.4, "live_clients": 216, "nrr": 101, "rule_of_80": 77, "gm_percent": 67.1, "ebitda_percent": -13.2, "headcount": 305 }
 // ];
 
+// FINAL FILE_INR_MONTHLY_TRENDS_TILL_AUG31st
+
 export default [
   { "date": "2024-04-01", "monthLabel": "Apr '24", "live_arr": 574702540.5, "contracted_arr": null, "target_arr": null, "live_clients": 183, "nrr": 88, "target_nrr": null, "rule_of_80": null, "gm_percent": 79.0, "target_gm_percent": null, "ebitda_percent": -18.3, "target_ebitda_percent": null, "headcount": 237, "target_mrr": null },
   { "date": "2024-05-01", "monthLabel": "May '24", "live_arr": 577344465.5, "contracted_arr": null, "target_arr": null, "live_clients": 181, "nrr": 96, "target_nrr": null, "rule_of_80": -4, "gm_percent": 72.8, "target_gm_percent": null, "ebitda_percent": -9.8, "target_ebitda_percent": null, "headcount": 239, "target_mrr": null },

@@ -99,12 +99,13 @@ import {
 export default function MetricTrendChart({
   data,
   dataKey,
-  targetKey,          // ✅ Added dynamic target key
+  targetKey,
   xAxisDataKey = 'monthLabel',
   color = '#0ea5e9',
   formatValue = (val) => val,
-  target,             // ✅ Still support static target
+  target,
   yAxisDomain,
+  extraLines = [], // [{dataKey, color, name}]
 }) {
   // --- Null-safe formatter
   const safeFormat = (v) =>
@@ -150,13 +151,14 @@ export default function MetricTrendChart({
           </linearGradient>
         </defs>
 
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={true} horizontal={true} />
         <XAxis
           dataKey={xAxisDataKey}
           stroke="#475569"
           fontSize={12}
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
+          allowDataOverflow={true}
           angle={-45}
           textAnchor="end"
           height={60}
@@ -164,8 +166,9 @@ export default function MetricTrendChart({
         <YAxis
           stroke="#475569"
           fontSize={12}
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
+          allowDataOverflow={true}
           tickFormatter={safeFormat}
           domain={yAxisDomain || ['auto', 'auto']}
         />
@@ -181,6 +184,19 @@ export default function MetricTrendChart({
           fill={`url(#${gradientId})`}
           name="Actual"
         />
+
+        {/* --- EXTRA LINES (for multi-series) --- */}
+        {extraLines.map((line, idx) => (
+          <Area
+            key={line.dataKey}
+            type="monotone"
+            dataKey={line.dataKey}
+            stroke={line.color}
+            strokeWidth={2}
+            fillOpacity={0}
+            name={line.name}
+          />
+        ))}
 
         {/* --- TARGET AREA / LINE --- */}
         {targetKey && (

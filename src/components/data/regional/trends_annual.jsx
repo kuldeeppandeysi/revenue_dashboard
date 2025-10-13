@@ -1,3 +1,5 @@
+// to validate numbers with akash
+
 export default [
   { "label": "2023", "country": "IN", "live_arr": 920000, "contracted_arr": 1050000, "target_arr": 950000, "live_clients": 20, "nrr": 101.5, "headcount": 135, "rule_of_80": 48.5, "gm_percent": 73.0, "ebitda_percent": -13.2 },
   { "label": "2024", "country": "IN", "live_arr": 1080000, "contracted_arr": 1320000, "target_arr": 1200000, "live_clients": 25, "nrr": 103.3, "headcount": 150, "rule_of_80": 52.3, "gm_percent": 74.7, "ebitda_percent": -11.0 },

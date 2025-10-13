@@ -3,10 +3,12 @@ export default [
     "country": "IN",
     "live_mrr": 58814056,
     "live_mrr_change": 3.38,
-    "live_mrr_target": 60700000,
-    "live_arr": 705768672,
+    "live_mrr_target": 60713273,
+    "live_arr": 705768676,
     "live_arr_change":  3.38,
-    "live_arr_target": 728400000,
+    "live_arr_target": 728559283,
+    "accrued_mrr": 278795895, //PG_SB_Data_Field
+    "accrued_mrr_target": 285549920, //PG_SB_Data_Field
     "contracted_mrr": null,
     "contracted_mrr_change": null,
     "contracted_mrr_target": null,
@@ -51,7 +53,9 @@ export default [
     "live_mrr_target": 3520804,
     "live_arr": 66917580,
     "live_arr_change": 34.78,
-    "live_arr_target": 42249648,
+    "live_arr_target": 42249650,
+    "accrued_mrr": 10953467, // PG_SB_Data_Field
+    "accrued_mrr_target": 7151350,
     "contracted_mrr": null,
     "contracted_mrr_change": null,
     "contracted_mrr_target": null,

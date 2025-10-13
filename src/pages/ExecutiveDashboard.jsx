@@ -1,3 +1,136 @@
+// --- Churn Data Aggregation Helpers ---
+import churnData from '@/components/data/executive/churn_data.jsx';
+import financeData from '@/components/data/executive/finance_data.jsx';
+// --- Collections Data Aggregation Helpers ---
+function getMonthlyCollectionsData(data) {
+  return data.map(row => {
+    // Convert Month to ISO date for sorting and filtering
+    const [mon, year] = row["Month"].split('-');
+    const monthNum = new Date(Date.parse(mon + " 1, 2020")).getMonth() + 1;
+    const isoDate = `${year}-${String(monthNum).padStart(2, '0')}-01`;
+    return {
+      ...row,
+      date: isoDate,
+      label: row["Month"],
+    };
+  });
+}
+
+function getQuarterlyCollectionsData(data) {
+  const monthly = getMonthlyCollectionsData(data);
+  const quarters = {};
+  monthly.forEach(row => {
+    const date = new Date(row.date);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    let qIdx, qYear;
+    if ([3,4,5].includes(month)) { qIdx = 1; qYear = year; } // Q1: Apr-Jun
+    else if ([6,7,8].includes(month)) { qIdx = 2; qYear = year; } // Q2: Jul-Sep
+    else if ([9,10,11].includes(month)) { qIdx = 3; qYear = year; } // Q3: Oct-Dec
+    else { qIdx = 4; qYear = month <= 2 ? year : year + 1; } // Q4: Jan-Mar
+    let label = `Q${qIdx} '${String(qYear).slice(-2)}`;
+    if (!quarters[label]) quarters[label] = [];
+    quarters[label].push(row);
+  });
+  return Object.entries(quarters).map(([label, arr]) => {
+    return {
+      label,
+      Unbilled: arr.reduce((sum, r) => sum + (r["Unbilled"] || 0), 0),
+      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0),
+      TotalOutstanding: arr.reduce((sum, r) => sum + (r["Total Outstanding"] || 0), 0)
+    };
+  });
+}
+
+function getAnnualCollectionsData(data) {
+  // Group by financial year (Apr-Mar)
+  const monthly = getMonthlyCollectionsData(data);
+  const years = {};
+  monthly.forEach(row => {
+    const date = new Date(row.date);
+    let fy;
+    if (date.getMonth() >= 3) {
+      fy = `FY ${String(date.getFullYear()+1).slice(-2)}`;
+    } else {
+      fy = `FY ${String(date.getFullYear()).slice(-2)}`;
+    }
+    if (!years[fy]) years[fy] = [];
+    years[fy].push(row);
+  });
+  return Object.entries(years).map(([label, arr]) => {
+    return {
+      label,
+      Unbilled: arr.reduce((sum, r) => sum + (r["Unbilled"] || 0), 0),
+      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0),
+      TotalOutstanding: arr.reduce((sum, r) => sum + (r["Total Outstanding"] || 0), 0)
+    };
+  });
+}
+
+function getMonthlyChurnData(data) {
+  return data.map(row => {
+    // Convert Month to ISO date for sorting and filtering
+    const [mon, year] = row["Month"].split('-');
+    const monthNum = new Date(Date.parse(mon + " 1, 2020")).getMonth() + 1;
+    const isoDate = `${year}-${String(monthNum).padStart(2, '0')}-01`;
+    return {
+      ...row,
+      date: isoDate,
+      label: row["Month"],
+    };
+  });
+}
+
+function getQuarterlyChurnData(data) {
+  // Group by quarter
+  const monthly = getMonthlyChurnData(data);
+  const quarters = {};
+  monthly.forEach(row => {
+    const date = new Date(row.date);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    let qIdx, qYear;
+    if ([3,4,5].includes(month)) { qIdx = 1; qYear = year; } // Q1: Apr-Jun
+    else if ([6,7,8].includes(month)) { qIdx = 2; qYear = year; } // Q2: Jul-Sep
+    else if ([9,10,11].includes(month)) { qIdx = 3; qYear = year; } // Q3: Oct-Dec
+    else { qIdx = 4; qYear = month <= 2 ? year : year + 1; } // Q4: Jan-Mar
+    let label = `Q${qIdx} '${String(qYear).slice(-2)}`;
+    if (!quarters[label]) quarters[label] = [];
+    quarters[label].push(row);
+  });
+  return Object.entries(quarters).map(([label, arr]) => {
+    return {
+      label,
+      brand_count: arr.reduce((sum, r) => sum + (r["Brand count"] || 0), 0),
+      revenue: arr.reduce((sum, r) => sum + (r["Revenue"] || 0), 0)
+    };
+  });
+}
+
+function getAnnualChurnData(data) {
+  // Group by financial year (Apr-Mar)
+  const monthly = getMonthlyChurnData(data);
+  const years = {};
+  monthly.forEach(row => {
+    const date = new Date(row.date);
+    let fy;
+    if (date.getMonth() >= 3) {
+      fy = `FY ${String(date.getFullYear()+1).slice(-2)}`;
+    } else {
+      fy = `FY ${String(date.getFullYear()).slice(-2)}`;
+    }
+    if (!years[fy]) years[fy] = [];
+    years[fy].push(row);
+  });
+  return Object.entries(years).map(([label, arr]) => {
+    return {
+      label,
+      brand_count: arr.reduce((sum, r) => sum + (r["Brand count"] || 0), 0),
+      revenue: arr.reduce((sum, r) => sum + (r["Revenue"] || 0), 0)
+    };
+  });
+}
+import { getQuarterlyAccruedData } from '@/utils/quarterly';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +145,33 @@ import { DollarSign, Users, Heart, Zap, Percent, BarChart, Briefcase, AlertTrian
 // --- DATA IMPORTS ---
 import liveKpisData from '@/components/data/executive/live.jsx';
 import monthlyTrendData from '@/components/data/executive/trends.jsx';
+import accruedTrendData from '@/components/data/executive/trends_accrued.jsx';
+
+// Helper to compute annual (FY) accrued_mrr sums from monthly data
+function getAnnualAccruedMRR(data) {
+  // FY24: Apr 2024 - Mar 2025
+  const fy24 = data.filter(row => {
+    const d = new Date(row.date);
+    return d >= new Date('2024-04-01') && d <= new Date('2025-03-31');
+  });
+  // FY25: Apr 2025 - Aug 2025
+  const fy25 = data.filter(row => {
+    const d = new Date(row.date);
+    return d >= new Date('2025-04-01') && d <= new Date('2025-08-31');
+  });
+  return [
+    {
+      label: "FY 24",
+      accrued_mrr: fy24.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
+      accrued_mrr_target: null
+    },
+    {
+      label: "FY 25",
+      accrued_mrr: fy25.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
+      accrued_mrr_target: null
+    }
+  ];
+}
 import quarterlyTrendData from '@/components/data/executive/quarterly_trends.jsx';
 import annualTrendData from '@/components/data/executive/annual_trends.jsx';
 // The Metric import is removed as it's not used when USE_DATABASE is false, and the instruction is to remove it.
@@ -24,20 +184,21 @@ const USE_DATABASE = false;
 const USD_TO_INR_RATE = 84.5;
 
 const kpiCardDefinitions = [
-    { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
-    { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
-    // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
-    // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
-    { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
-    // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
-    { group: 'Health', title: "Locations Health Score", key: "chs", format: "percentage", icon: Heart },
-    { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
-    { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
-    { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "percentage", icon: Zap },
-    { group: 'Performance', title: "MAU", key: "mau", format: "number", icon: BarChart },
-    { group: 'Profitability', title: "GM %", key: "gm_percent", format: "percentage", icon: Percent },
-    { group: 'Profitability', title: "EBITDA %", key: "ebitda_percent", format: "percentage", icon: Percent },
-    { group: 'People', title: "Headcount", key: "headcount", format: "number", icon: Briefcase },
+  { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
+  { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
+  { group: 'Revenue', title: "Accrued MRR", key: "accrued_mrr", format: "currency", icon: DollarSign },
+  // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
+  // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
+  { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
+  // { group: 'Clients', title: "# of Contracted Clients", key: "contracted_clients", format: "number", icon: Users },
+  { group: 'Health', title: "Locations Health Score", key: "chs", format: "percentage", icon: Heart },
+  { group: 'Health', title: "Accounts at Risk", key: "accounts_at_risk", format: "percentage", icon: AlertTriangle },
+  { group: 'Performance', title: "NRR", key: "nrr", format: "percentage", icon: Zap },
+  { group: 'Performance', title: "Rule of 80", key: "rule_of_80", format: "percentage", icon: Zap },
+  { group: 'Performance', title: "MAU", key: "mau", format: "number", icon: BarChart },
+  { group: 'Profitability', title: "GM %", key: "gm_percent", format: "percentage", icon: Percent },
+  { group: 'Profitability', title: "EBITDA %", key: "ebitda_percent", format: "percentage", icon: Percent },
+  { group: 'People', title: "Headcount", key: "headcount", format: "number", icon: Briefcase },
 ];
 
 // const trendChartDefinitions = [
@@ -188,7 +349,7 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
     
     // Convert currency for USD
     if (currency === 'USD') {
-        const currencyKeys = ['live_mrr', 'live_arr']; // Removed contracted keys
+        const currencyKeys = ['live_mrr', 'live_arr','accrued_mrr', 'accrued_mrr_value' ]; // Removed contracted keys
         currencyKeys.forEach(key => {
             // Convert main values
             if (converted[key] !== undefined && converted[key] !== null) {
@@ -319,18 +480,25 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
         {Object.entries(kpiGroups).map(([groupName, cards]) => (
           <div key={groupName}>
             <h2 className="text-xl font-bold text-navy-800 mb-4 tracking-tight">{groupName}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-8 justify-start px-2">
               {cards.map(def => (
                 <MetricCard 
-                    key={def.key}
-                    title={def.title}
-                    value={displayKpis[def.key]}
-                    target={displayKpis[`${def.key}_target`]}
-                    change={kpis[`${def.key}_change`]}
-                    format={def.format}
-                    categoryIcon={def.icon}
-                    currency={currency}
-                    loading={loading}
+                  key={def.key}
+                  title={def.title}
+                  value={displayKpis[def.key]}
+                  target={def.key === 'accrued_mrr' ? displayKpis['accrued_mrr_value'] : (def.noTarget ? null : displayKpis[`${def.key}_target`])}
+                  change={kpis[`${def.key}_change`]}
+                  format={def.format}
+                  categoryIcon={def.icon}
+                  currency={currency}
+                  loading={loading}
+                  className={
+                    ['live_mrr', 'live_arr'].includes(def.key)
+                      ? 'scale-105 min-w-[300px]'
+                      : ['accrued_mrr', 'accrued_mrr_value'].includes(def.key)
+                      ? 'scale-90'
+                      : ''
+                  }
                 />
               ))}
             </div>
@@ -339,16 +507,16 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
       </section>
 
       {/* -- Sticky Filter Bar for Trends -- */}
-      <div className="sticky top-6 bg-white/70 backdrop-blur-lg p-4 rounded-xl shadow-lg border-2 border-navy-200 z-10 flex items-center justify-between">
-          <h2 className="text-2xl font-black text-navy-900">Metric Trends</h2>
-          <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                  <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
-                  {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton> */}
-                  {/* <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Annual</GranularityButton> */}
-              </div>
-          </div>
+    <div className="sticky top-6 bg-white/70 backdrop-blur-lg p-4 rounded-xl shadow-lg border-2 border-navy-200 z-10 flex items-center justify-between">
+      <h2 className="text-2xl font-black text-navy-900">Metric Trends</h2>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <GranularityButton granularity={granularity} setGranularity={setGranularity} value="monthly">Monthly</GranularityButton>
+          <GranularityButton granularity={granularity} setGranularity={setGranularity} value="quarterly">Quarterly</GranularityButton>
+          <GranularityButton granularity={granularity} setGranularity={setGranularity} value="annual">Yearly</GranularityButton>
+        </div>
       </div>
+    </div>
 
       {/* -- Trend Charts Section -- */}
       <section>
@@ -357,19 +525,202 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
             <h3 className="text-lg font-bold text-navy-800 mb-4">ARR Performance</h3>
             <CombinedArrChart data={displayTrendData} currency={currency} />
           </div>
-          {/* {trendChartDefinitions.map(def => (
-            <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
-              <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
-              <MetricTrendChart 
-                data={displayTrendData}
-                dataKey={def.key}
-                formatValue={def.format}
-                color={def.color}
-                target={def.target}
-                yAxisDomain={def.domain}
-              />
-            </div>
-          ))} */}
+          <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
+            <h3 className="text-lg font-bold text-navy-800 mb-4 flex items-center justify-between">
+              Accrued MRR Performance
+              <span className="flex items-center gap-6">
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ background: '#6366f1', display: 'inline-block' }}></span>
+                  <span className="text-sm font-medium text-navy-700">Accrued MRR</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ background: '#94a3b8', display: 'inline-block' }}></span>
+                  <span className="text-sm font-medium text-navy-700">Accrued MRR Target</span>
+                </span>
+              </span>
+            </h3>
+            <MetricTrendChart 
+              data={
+                granularity === 'quarterly' ? getQuarterlyAccruedData(accruedTrendData)
+                : granularity === 'annual' ? getAnnualAccruedMRR(accruedTrendData)
+                : accruedTrendData
+              }
+              dataKey="accrued_mrr"
+              formatValue={(v) => {
+                if (currency === 'USD') return `$${(v / USD_TO_INR_RATE / 1e6).toFixed(1)}M`;
+                return `₹${(v / 1e6).toFixed(1)}M`;
+              }}
+              color="#6366f1" // Main line color for accrued_mrr
+              targetKey="accrued_mrr_target"
+              targetColor="#f59e42" // Target line color for accrued_mrr_target
+              yAxisDomain={[0, 80_000_000]}
+              xAxisDataKey={granularity === 'quarterly' ? 'label' : granularity === 'annual' ? 'label' : 'monthLabel'}
+            />
+          </div>
+          {/* -- Churn Brand Count vs Time -- */}
+          <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8">
+            <h3 className="text-lg font-bold text-navy-800 mb-4">Churn Brand Count vs Time</h3>
+            <MetricTrendChart
+              data={
+                granularity === 'quarterly' ? getQuarterlyChurnData(churnData)
+                : granularity === 'annual' ? getAnnualChurnData(churnData)
+                : getMonthlyChurnData(churnData)
+              }
+              dataKey={granularity === 'quarterly' || granularity === 'annual' ? 'brand_count' : 'Brand count'}
+              formatValue={v => v}
+              color="#6366f1"
+              yAxisDomain={[0, 15]}
+              xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : 'Month'}
+            />
+          </div>
+
+          {/* -- Churn Revenue vs Time -- */}
+          <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8">
+            <h3 className="text-lg font-bold text-navy-800 mb-4">Churn Revenue vs Time</h3>
+            <MetricTrendChart
+              data={
+                granularity === 'quarterly' ? getQuarterlyChurnData(churnData)
+                : granularity === 'annual' ? getAnnualChurnData(churnData)
+                : getMonthlyChurnData(churnData)
+              }
+              dataKey={granularity === 'quarterly' || granularity === 'annual' ? 'revenue' : 'Revenue'}
+              formatValue={v => `₹${v.toLocaleString()}`}
+              color="#6366f1"
+              yAxisDomain={[0, 15000]}
+              xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : 'Month'}
+            />
+          </div>
+
+            {/* -- Collections Graph -- */}
+              <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8 flex flex-col">
+                <div className="flex items-center justify-between mb-4 w-full">
+                  <h3 className="text-lg font-bold text-navy-800">Collections</h3>
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded" style={{ background: '#6366f1', display: 'inline-block' }}></span>
+                      <span className="text-sm font-medium text-navy-700">Unbilled</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded" style={{ background: '#10b981', display: 'inline-block' }}></span>
+                      <span className="text-sm font-medium text-navy-700">AR</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded" style={{ background: '#f59e42', display: 'inline-block' }}></span>
+                      <span className="text-sm font-medium text-navy-700">Total Outstanding</span>
+                    </div>
+                  </div>
+                </div>
+                {(() => {
+                  // Prepare data
+                  let chartData;
+                  if (granularity === 'annual') {
+                    const monthly = getMonthlyCollectionsData(financeData).map(row => ({
+                      ...row,
+                      TotalOutstanding: row["Total Outstanding"]
+                    }));
+                    // FY 25: Apr 2024 - Mar 2025
+                    // FY 26: Apr 2025 - Aug 2025
+                    const years = [
+                      {
+                        label: "FY 25",
+                        months: [
+                          "Apr-2024", "May-2024", "Jun-2024", "Jul-2024", "Aug-2024", "Sep-2024",
+                          "Oct-2024", "Nov-2024", "Dec-2024", "Jan-2025", "Feb-2025", "Mar-2025"
+                        ]
+                      },
+                      {
+                        label: "FY 26",
+                        months: ["Apr-2025", "May-2025", "Jun-2025", "Jul-2025", "Aug-2025"]
+                      }
+                    ];
+                    chartData = years.map(y => {
+                      const rows = monthly.filter(row => y.months.includes(row.label));
+                      let Unbilled = rows.reduce((sum, r) => sum + (r.Unbilled || 0), 0);
+                      let AR = rows.reduce((sum, r) => sum + (r.AR || 0), 0);
+                      let TotalOutstanding = rows.reduce((sum, r) => sum + (r.TotalOutstanding || 0), 0);
+                      if (currency === 'USD') {
+                        Unbilled = (Unbilled / USD_TO_INR_RATE) / 1e6;
+                        AR = (AR / USD_TO_INR_RATE) / 1e6;
+                        TotalOutstanding = (TotalOutstanding / USD_TO_INR_RATE) / 1e6;
+                      }
+                      return {
+                        label: y.label,
+                        Unbilled,
+                        AR,
+                        TotalOutstanding
+                      };
+                    });
+                  } else if (granularity === 'quarterly') {
+                    const monthly = getMonthlyCollectionsData(financeData).map(row => ({
+                      ...row,
+                      TotalOutstanding: row["Total Outstanding"]
+                    }));
+                    const quarters = [
+                      { label: "Q1 '24", months: ["Apr-2024", "May-2024", "Jun-2024"] },
+                      { label: "Q2 '24", months: ["Jul-2024", "Aug-2024", "Sep-2024"] },
+                      { label: "Q3 '24", months: ["Oct-2024", "Nov-2024", "Dec-2024"] },
+                      { label: "Q4 '24", months: ["Jan-2025", "Feb-2025", "Mar-2025"] },
+                      { label: "Q1 '25", months: ["Apr-2025", "May-2025", "Jun-2025"] }
+                    ];
+                    chartData = quarters.map(q => {
+                      const rows = monthly.filter(row => q.months.includes(row.label));
+                      let Unbilled = rows.reduce((sum, r) => sum + (r.Unbilled || 0), 0);
+                      let AR = rows.reduce((sum, r) => sum + (r.AR || 0), 0);
+                      let TotalOutstanding = rows.reduce((sum, r) => sum + (r.TotalOutstanding || 0), 0);
+                      if (currency === 'USD') {
+                        Unbilled = (Unbilled / USD_TO_INR_RATE) / 1e6;
+                        AR = (AR / USD_TO_INR_RATE) / 1e6;
+                        TotalOutstanding = (TotalOutstanding / USD_TO_INR_RATE) / 1e6;
+                      }
+                      return {
+                        label: q.label,
+                        Unbilled,
+                        AR,
+                        TotalOutstanding
+                      };
+                    });
+                  } else {
+                    let monthly = getMonthlyCollectionsData(financeData).map(row => ({
+                      ...row,
+                      TotalOutstanding: row["Total Outstanding"]
+                    }));
+                    if (currency === 'USD') {
+                      monthly = monthly.map(row => ({
+                        ...row,
+                        Unbilled: (row.Unbilled / USD_TO_INR_RATE) / 1e6,
+                        AR: (row.AR / USD_TO_INR_RATE) / 1e6,
+                        TotalOutstanding: (row.TotalOutstanding / USD_TO_INR_RATE) / 1e6
+                      }));
+                    }
+                    chartData = monthly;
+                  }
+                  // Calculate max for Y-axis
+                  const maxY = Math.max(
+                    ...chartData.map(d => Math.max(d.Unbilled || 0, d.AR || 0, d.TotalOutstanding || 0))
+                  );
+                  const yAxisDomain = currency === 'USD'
+                    ? [0, Math.ceil(maxY * 1.1)]
+                    : [0, Math.ceil(maxY * 1.1)];
+                  // Render chart with all three lines
+                  return (
+                    <MetricTrendChart
+                      data={chartData}
+                      dataKey="Unbilled"
+                      color="#6366f1"
+                      formatValue={v => currency === 'USD' ? `$${v.toFixed(2)}M` : `₹${v.toLocaleString()}`}
+                      yAxisDomain={yAxisDomain}
+                      xAxisDataKey="label"
+                      extraLines={[
+                        { dataKey: 'AR', color: '#10b981', name: 'AR', strokeWidth: 2 },
+                        { dataKey: 'TotalOutstanding', color: '#f59e42', name: 'Total Outstanding', strokeWidth: 3 }
+                      ]}
+                      showYAxis={true}
+                      showAllLines={true}
+                    />
+                  );
+                })()}
+              </div>
+
           {trendChartDefinitions.map(def => (
             <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
               <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
@@ -379,8 +730,9 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                 formatValue={def.format}
                 color={def.color}
                 target={def.target}
-                targetKey={def.targetKey}     // ✅ Added
+                targetKey={def.targetKey}
                 yAxisDomain={def.domain}
+                xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : undefined}
               />
             </div>
           ))}

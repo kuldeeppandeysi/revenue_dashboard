@@ -15,34 +15,44 @@ export default function MetricCard({
   format = "number",
   currency = "USD", // New prop
   categoryIcon: CategoryIcon, // New prop for icon
-  isInverse = false // New prop: true for metrics where increase is bad (like churn)
+  isInverse = false, // New prop: true for metrics where increase is bad (like churn)
+  color, // color for value
+  className = '' // custom class for card
 }) {
   const formatValue = (val) => {
     if (loading || val === null || val === undefined) return "—";
-    
     // If the value is a string (like "Integration In Progress"), return it as-is
     if (typeof val === 'string') return val;
-    
-    switch (format) {
-      case "currency":
-        return new Intl.NumberFormat('en-US', { 
-          style: 'currency', 
-          currency: currency,
-          notation: 'compact',
-          maximumFractionDigits: 1,
-          minimumFractionDigits: 1
-        }).format(val);
-      case "percentage":
-        return `${val.toFixed(1)}%`;
-      case "number":
-        return new Intl.NumberFormat('en-US', {
-          notation: 'compact',
-          maximumFractionDigits: 1,
-          minimumFractionDigits: 1
-        }).format(val);
-      default:
-        return val.toString();
+
+    // Custom formatting for large currency values
+    if (format === "currency") {
+      let absVal = Math.abs(val);
+      let symbol = currency === 'INR' ? '₹' : '$';
+      let formatted;
+      if (absVal >= 1e9) {
+        formatted = `${symbol}${(val / 1e9).toFixed(1)}B`;
+      } else if (absVal >= 1e6) {
+        formatted = `${symbol}${(val / 1e6).toFixed(1)}M`;
+      } else if (absVal >= 1e3) {
+        formatted = `${symbol}${(val / 1e3).toFixed(1)}K`;
+      } else {
+        formatted = `${symbol}${val.toLocaleString()}`;
+      }
+      return formatted;
     }
+    if (format === "percentage") {
+      return `${val.toFixed(1)}%`;
+    }
+    if (format === "number") {
+      if (Math.abs(val) >= 1e6) {
+        return `${(val / 1e6).toFixed(1)}M`;
+      } else if (Math.abs(val) >= 1e3) {
+        return `${(val / 1e3).toFixed(1)}K`;
+      } else {
+        return val.toLocaleString();
+      }
+    }
+    return val.toString();
   };
 
   const getTrendIcon = () => {
@@ -60,6 +70,7 @@ export default function MetricCard({
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300 }}
+      className={className}
     >
       <Card className="relative overflow-hidden transition-all duration-300 hover:shadow-xl border-2 border-navy-200 bg-white group">
         <CardHeader className="pb-2">
@@ -73,9 +84,9 @@ export default function MetricCard({
         
         <CardContent className="pt-0">
           <div className="flex items-end justify-between gap-4">
-            <div className={`font-black text-navy-900 leading-none tracking-tighter ${
+            <div className={`font-black leading-none tracking-tighter ${
               typeof value === 'string' ? 'text-lg' : 'text-4xl'
-            }`}>
+            }`} style={color ? { color } : { color: '#0a2540' }}>
               {loading ? (
                 <div className="animate-pulse bg-navy-200 h-9 w-24 rounded-lg" />
               ) : (

@@ -1,7 +1,9 @@
+// FINAL FILE_INR_QUARTERLY_TRENDS_TILL_AUG31st
+
 export default [
 {
   "label": "Q1 '24",
-  "live_arr": 592460720,
+  "live_arr": 592459901,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 190,
@@ -13,7 +15,7 @@ export default [
 },
 {
   "label": "Q2 '24",
-  "live_arr": 646681019,
+  "live_arr": 646873005,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 195,
@@ -25,7 +27,7 @@ export default [
 },
 {
   "label": "Q3 '24",
-  "live_arr": 705252116,
+  "live_arr": 705372102,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 204,
@@ -37,7 +39,7 @@ export default [
 },
 {
   "label": "Q4 '24",
-  "live_arr": 731861504,
+  "live_arr": 7318800701,
   "contracted_arr": null,
   "target_arr": null,
   "live_clients": 206,
@@ -49,9 +51,9 @@ export default [
 },
 {
   "label": "Q1 '25",
-  "live_arr": 689407423,
+  "live_arr": 689210257,
   "contracted_arr": null,
-  "target_arr": 709482636.8,
+  "target_arr": 709063210,
   "live_clients": 213,
   "nrr": 97,
   "rule_of_80": 28.3,
