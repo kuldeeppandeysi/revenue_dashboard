@@ -11,22 +11,22 @@ export default [
   },
   {
     "Month": "Jun-2024",
-    "Brand count": 5,
+    "Brand count": 3,
     "Revenue": null
   },
   {
     "Month": "Jul-2024",
-    "Brand count": 8,
+    "Brand count": 5,
     "Revenue": null
   },
   {
     "Month": "Aug-2024",
-    "Brand count": 7,
+    "Brand count": 5,
     "Revenue": null
   },
   {
     "Month": "Sep-2024",
-    "Brand count": 7,
+    "Brand count": 6,
     "Revenue": null
   },
   {
@@ -36,7 +36,7 @@ export default [
   },
   {
     "Month": "Nov-2024",
-    "Brand count": 4,
+    "Brand count": 2,
     "Revenue": null
   },
   {
@@ -51,17 +51,17 @@ export default [
   },
   {
     "Month": "Feb-2025",
-    "Brand count": 1,
+    "Brand count": 2,
     "Revenue": null
   },
   {
     "Month": "Mar-2025",
-    "Brand count": 5,
+    "Brand count": 4,
     "Revenue": null
   },
   {
     "Month": "Apr-2025",
-    "Brand count": 5,
+    "Brand count": 6,
     "Revenue": null
   },
   {
@@ -81,7 +81,7 @@ export default [
   },
   {
     "Month": "Aug-2025",
-    "Brand count": 7,
+    "Brand count": 6,
     "Revenue": null
   }
 ]
