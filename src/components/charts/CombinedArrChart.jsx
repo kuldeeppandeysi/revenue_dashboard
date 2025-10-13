@@ -53,8 +53,8 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
           dataKey="label" 
           stroke="#475569"
           fontSize={12}
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
           angle={-45}
           textAnchor="end"
           height={60}
@@ -62,9 +62,10 @@ export default function CombinedArrChart({ data, currency = 'USD' }) {
         <YAxis 
           stroke="#475569"
           fontSize={12}
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
           tickFormatter={formatValue}
+          domain={currency === 'USD' ? [5000000, 'auto'] : [5000000 * 84.5, 'auto']}
         />
         <Tooltip content={<CustomTooltip />} />
         <Legend 

@@ -1,5 +1,4 @@
-// --- Churn Data Aggregation Helpers ---
-import churnData from '@/components/data/executive/churn_data.jsx';
+// --- Collections Data Aggregation Helpers ---
 import financeData from '@/components/data/executive/finance_data.jsx';
 // --- Collections Data Aggregation Helpers ---
 function getMonthlyCollectionsData(data) {
@@ -23,12 +22,12 @@ function getQuarterlyCollectionsData(data) {
     const date = new Date(row.date);
     const year = date.getFullYear();
     const month = date.getMonth();
-    let qIdx, qYear;
-    if ([3,4,5].includes(month)) { qIdx = 1; qYear = year; } // Q1: Apr-Jun
-    else if ([6,7,8].includes(month)) { qIdx = 2; qYear = year; } // Q2: Jul-Sep
-    else if ([9,10,11].includes(month)) { qIdx = 3; qYear = year; } // Q3: Oct-Dec
-    else { qIdx = 4; qYear = month <= 2 ? year : year + 1; } // Q4: Jan-Mar
-    let label = `Q${qIdx} '${String(qYear).slice(-2)}`;
+    let qIdx, qYear, endMonth;
+    if ([3,4,5].includes(month)) { qIdx = 1; qYear = year; endMonth = "Jun"; } // Q1: Apr-Jun
+    else if ([6,7,8].includes(month)) { qIdx = 2; qYear = year; endMonth = "Sep"; } // Q2: Jul-Sep
+    else if ([9,10,11].includes(month)) { qIdx = 3; qYear = year; endMonth = "Dec"; } // Q3: Oct-Dec
+    else { qIdx = 4; qYear = month <= 2 ? year : year + 1; endMonth = "Mar"; } // Q4: Jan-Mar
+    let label = `${endMonth}'${String(qYear).slice(-2)}`;
     if (!quarters[label]) quarters[label] = [];
     quarters[label].push(row);
   });
@@ -36,8 +35,7 @@ function getQuarterlyCollectionsData(data) {
     return {
       label,
       Unbilled: arr.reduce((sum, r) => sum + (r["Unbilled"] || 0), 0),
-      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0),
-      TotalOutstanding: arr.reduce((sum, r) => sum + (r["Total Outstanding"] || 0), 0)
+      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0)
     };
   });
 }
@@ -61,75 +59,12 @@ function getAnnualCollectionsData(data) {
     return {
       label,
       Unbilled: arr.reduce((sum, r) => sum + (r["Unbilled"] || 0), 0),
-      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0),
-      TotalOutstanding: arr.reduce((sum, r) => sum + (r["Total Outstanding"] || 0), 0)
+      AR: arr.reduce((sum, r) => sum + (r["AR"] || 0), 0)
     };
   });
 }
 
-function getMonthlyChurnData(data) {
-  return data.map(row => {
-    // Convert Month to ISO date for sorting and filtering
-    const [mon, year] = row["Month"].split('-');
-    const monthNum = new Date(Date.parse(mon + " 1, 2020")).getMonth() + 1;
-    const isoDate = `${year}-${String(monthNum).padStart(2, '0')}-01`;
-    return {
-      ...row,
-      date: isoDate,
-      label: row["Month"],
-    };
-  });
-}
 
-function getQuarterlyChurnData(data) {
-  // Group by quarter
-  const monthly = getMonthlyChurnData(data);
-  const quarters = {};
-  monthly.forEach(row => {
-    const date = new Date(row.date);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    let qIdx, qYear;
-    if ([3,4,5].includes(month)) { qIdx = 1; qYear = year; } // Q1: Apr-Jun
-    else if ([6,7,8].includes(month)) { qIdx = 2; qYear = year; } // Q2: Jul-Sep
-    else if ([9,10,11].includes(month)) { qIdx = 3; qYear = year; } // Q3: Oct-Dec
-    else { qIdx = 4; qYear = month <= 2 ? year : year + 1; } // Q4: Jan-Mar
-    let label = `Q${qIdx} '${String(qYear).slice(-2)}`;
-    if (!quarters[label]) quarters[label] = [];
-    quarters[label].push(row);
-  });
-  return Object.entries(quarters).map(([label, arr]) => {
-    return {
-      label,
-      brand_count: arr.reduce((sum, r) => sum + (r["Brand count"] || 0), 0),
-      revenue: arr.reduce((sum, r) => sum + (r["Revenue"] || 0), 0)
-    };
-  });
-}
-
-function getAnnualChurnData(data) {
-  // Group by financial year (Apr-Mar)
-  const monthly = getMonthlyChurnData(data);
-  const years = {};
-  monthly.forEach(row => {
-    const date = new Date(row.date);
-    let fy;
-    if (date.getMonth() >= 3) {
-      fy = `FY ${String(date.getFullYear()+1).slice(-2)}`;
-    } else {
-      fy = `FY ${String(date.getFullYear()).slice(-2)}`;
-    }
-    if (!years[fy]) years[fy] = [];
-    years[fy].push(row);
-  });
-  return Object.entries(years).map(([label, arr]) => {
-    return {
-      label,
-      brand_count: arr.reduce((sum, r) => sum + (r["Brand count"] || 0), 0),
-      revenue: arr.reduce((sum, r) => sum + (r["Revenue"] || 0), 0)
-    };
-  });
-}
 import { getQuarterlyAccruedData } from '@/utils/quarterly';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -139,6 +74,7 @@ import MetricCard from '../components/metrics/MetricCard';
 import MetricTrendChart from '../components/charts/MetricTrendChart';
 import HeadcountChart from '../components/charts/HeadcountChart';
 import CombinedArrChart from '../components/charts/CombinedArrChart';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getQuarter, getYear, parseISO, format } from 'date-fns'; // Added 'format'
 import { DollarSign, Users, Heart, Zap, Percent, BarChart, Briefcase, AlertTriangle } from 'lucide-react';
 
@@ -149,26 +85,26 @@ import accruedTrendData from '@/components/data/executive/trends_accrued.jsx';
 
 // Helper to compute annual (FY) accrued_mrr sums from monthly data
 function getAnnualAccruedMRR(data) {
-  // FY24: Apr 2024 - Mar 2025
-  const fy24 = data.filter(row => {
+  // FY25: Apr 2024 - Mar 2025
+  const fy25 = data.filter(row => {
     const d = new Date(row.date);
     return d >= new Date('2024-04-01') && d <= new Date('2025-03-31');
   });
-  // FY25: Apr 2025 - Aug 2025
-  const fy25 = data.filter(row => {
+  // FY26: Apr 2025 - Aug 2025
+  const fy26 = data.filter(row => {
     const d = new Date(row.date);
     return d >= new Date('2025-04-01') && d <= new Date('2025-08-31');
   });
   return [
     {
-      label: "FY 24",
-      accrued_mrr: fy24.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
-      accrued_mrr_target: null
+      label: "FY25",
+      accrued_mrr: fy25.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
+      accrued_mrr_target: fy25.length > 0 ? fy25.reduce((sum, r) => sum + (r.accrued_mrr_target || 0), 0) : null
     },
     {
-      label: "FY 25",
-      accrued_mrr: fy25.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
-      accrued_mrr_target: null
+      label: "FY26",
+      accrued_mrr: fy26.reduce((sum, r) => sum + (r.accrued_mrr || 0), 0),
+      accrued_mrr_target: fy26.length > 0 ? fy26.reduce((sum, r) => sum + (r.accrued_mrr_target || 0), 0) : null
     }
   ];
 }
@@ -186,7 +122,7 @@ const USD_TO_INR_RATE = 84.5;
 const kpiCardDefinitions = [
   { group: 'Revenue', title: "Live MRR", key: "live_mrr", format: "currency", icon: DollarSign },
   { group: 'Revenue', title: "Live ARR", key: "live_arr", format: "currency", icon: DollarSign },
-  { group: 'Revenue', title: "Accrued MRR", key: "accrued_mrr", format: "currency", icon: DollarSign },
+  { group: 'Revenue', title: "Accrued MRR YTD", key: "accrued_mrr", format: "currency", icon: DollarSign },
   // { group: 'Revenue', title: "Contracted MRR", key: "contracted_mrr", format: "currency", icon: DollarSign },
   // { group: 'Revenue', title: "Contracted ARR", key: "contracted_arr", format: "currency", icon: DollarSign },
   { group: 'Clients', title: "# Live Customers", key: "live_clients", format: "number", icon: Users },
@@ -399,7 +335,11 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
         const date = parseISO(curr.date);
         let key;
         if (granularity === 'quarterly') {
-          key = `Q${getQuarter(date)} ${getYear(date)}`;
+          const quarter = getQuarter(date);
+          const year = getYear(date);
+          const endMonths = ["Mar", "Jun", "Sep", "Dec"];
+          const endMonth = endMonths[quarter - 1];
+          key = `${endMonth}'${String(year).slice(-2)}`;
         } else { // annual
           key = getYear(date).toString();
         }
@@ -539,62 +479,93 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                 </span>
               </span>
             </h3>
-            <MetricTrendChart 
-              data={
-                granularity === 'quarterly' ? getQuarterlyAccruedData(accruedTrendData)
+            {(() => {
+              const accruedData = granularity === 'quarterly' ? getQuarterlyAccruedData(accruedTrendData)
                 : granularity === 'annual' ? getAnnualAccruedMRR(accruedTrendData)
-                : accruedTrendData
-              }
-              dataKey="accrued_mrr"
-              formatValue={(v) => {
+                : accruedTrendData;
+
+              const formatAccruedValue = (v) => {
                 if (currency === 'USD') return `$${(v / USD_TO_INR_RATE / 1e6).toFixed(1)}M`;
                 return `₹${(v / 1e6).toFixed(1)}M`;
-              }}
-              color="#6366f1" // Main line color for accrued_mrr
-              targetKey="accrued_mrr_target"
-              targetColor="#f59e42" // Target line color for accrued_mrr_target
-              yAxisDomain={[0, 80_000_000]}
-              xAxisDataKey={granularity === 'quarterly' ? 'label' : granularity === 'annual' ? 'label' : 'monthLabel'}
-            />
-          </div>
-          {/* -- Churn Brand Count vs Time -- */}
-          <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8">
-            <h3 className="text-lg font-bold text-navy-800 mb-4">Churn Brand Count vs Time</h3>
-            <MetricTrendChart
-              data={
-                granularity === 'quarterly' ? getQuarterlyChurnData(churnData)
-                : granularity === 'annual' ? getAnnualChurnData(churnData)
-                : getMonthlyChurnData(churnData)
-              }
-              dataKey={granularity === 'quarterly' || granularity === 'annual' ? 'brand_count' : 'Brand count'}
-              formatValue={v => v}
-              color="#6366f1"
-              yAxisDomain={[0, 15]}
-              xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : 'Month'}
-            />
-          </div>
+              };
 
-          {/* -- Churn Revenue vs Time -- */}
-          <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8">
-            <h3 className="text-lg font-bold text-navy-800 mb-4">Churn Revenue vs Time</h3>
-            <MetricTrendChart
-              data={
-                granularity === 'quarterly' ? getQuarterlyChurnData(churnData)
-                : granularity === 'annual' ? getAnnualChurnData(churnData)
-                : getMonthlyChurnData(churnData)
-              }
-              dataKey={granularity === 'quarterly' || granularity === 'annual' ? 'revenue' : 'Revenue'}
-              formatValue={v => `₹${v.toLocaleString()}`}
-              color="#6366f1"
-              yAxisDomain={[0, 15000]}
-              xAxisDataKey={granularity === 'quarterly' || granularity === 'annual' ? 'label' : 'Month'}
-            />
-          </div>
+              // Custom tooltip for Accrued MRR
+              const CustomAccruedTooltip = ({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                  return (
+                    <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-navy-300">
+                      <p className="font-bold text-navy-800 mb-2">{label}</p>
+                      <div className="space-y-1">
+                        {payload.map(entry => (
+                          <div key={entry.dataKey} className="flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.stroke }}></div>
+                              <span className="text-sm text-navy-700">{entry.name || entry.dataKey}</span>
+                            </div>
+                            <span className="font-bold text-navy-900">
+                              {formatAccruedValue(entry.value)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              };
 
+              return (
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart
+                    data={accruedData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis 
+                      dataKey={granularity === 'quarterly' ? 'label' : granularity === 'annual' ? 'label' : 'monthLabel'}
+                      stroke="#475569"
+                      fontSize={12}
+                      tickLine={true}
+                      axisLine={true}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis 
+                      stroke="#475569"
+                      fontSize={12}
+                      tickLine={true}
+                      axisLine={true}
+                      tickFormatter={formatAccruedValue}
+                      domain={[0, 80_000_000]}
+                    />
+                    <Tooltip content={<CustomAccruedTooltip />} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="accrued_mrr" 
+                      name="Accrued MRR" 
+                      stroke="#6366f1" 
+                      strokeWidth={3} 
+                      dot={false}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="accrued_mrr_target" 
+                      name="Accrued MRR Target" 
+                      stroke="#94a3b8" 
+                      strokeDasharray="5 5"
+                      strokeWidth={2} 
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              );
+            })()}
+          </div>
             {/* -- Collections Graph -- */}
               <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg mt-8 flex flex-col">
                 <div className="flex items-center justify-between mb-4 w-full">
-                  <h3 className="text-lg font-bold text-navy-800">Collections</h3>
+                  <h3 className="text-lg font-bold text-navy-800">Revenue Provisions</h3>
                   <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                       <span className="w-4 h-4 rounded" style={{ background: '#6366f1', display: 'inline-block' }}></span>
@@ -603,10 +574,6 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                     <div className="flex items-center gap-2">
                       <span className="w-4 h-4 rounded" style={{ background: '#10b981', display: 'inline-block' }}></span>
                       <span className="text-sm font-medium text-navy-700">AR</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 rounded" style={{ background: '#f59e42', display: 'inline-block' }}></span>
-                      <span className="text-sm font-medium text-navy-700">Total Outstanding</span>
                     </div>
                   </div>
                 </div>
@@ -634,20 +601,21 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                       }
                     ];
                     chartData = years.map(y => {
-                      const rows = monthly.filter(row => y.months.includes(row.label));
-                      let Unbilled = rows.reduce((sum, r) => sum + (r.Unbilled || 0), 0);
-                      let AR = rows.reduce((sum, r) => sum + (r.AR || 0), 0);
-                      let TotalOutstanding = rows.reduce((sum, r) => sum + (r.TotalOutstanding || 0), 0);
+                      // For FY 25, show Mar-2025 values; for FY 26, show Aug-2025 values
+                      const endMonth = y.label === "FY 25" ? "Mar-2025" : "Aug-2025";
+                      const endMonthRow = monthly.find(row => row.label === endMonth);
+                      if (!endMonthRow) return { label: y.label, Unbilled: 0, AR: 0 };
+                      
+                      let Unbilled = endMonthRow.Unbilled || 0;
+                      let AR = endMonthRow.AR || 0;
                       if (currency === 'USD') {
                         Unbilled = (Unbilled / USD_TO_INR_RATE) / 1e6;
                         AR = (AR / USD_TO_INR_RATE) / 1e6;
-                        TotalOutstanding = (TotalOutstanding / USD_TO_INR_RATE) / 1e6;
                       }
                       return {
                         label: y.label,
                         Unbilled,
-                        AR,
-                        TotalOutstanding
+                        AR
                       };
                     });
                   } else if (granularity === 'quarterly') {
@@ -656,27 +624,26 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                       TotalOutstanding: row["Total Outstanding"]
                     }));
                     const quarters = [
-                      { label: "Q1 '24", months: ["Apr-2024", "May-2024", "Jun-2024"] },
-                      { label: "Q2 '24", months: ["Jul-2024", "Aug-2024", "Sep-2024"] },
-                      { label: "Q3 '24", months: ["Oct-2024", "Nov-2024", "Dec-2024"] },
-                      { label: "Q4 '24", months: ["Jan-2025", "Feb-2025", "Mar-2025"] },
-                      { label: "Q1 '25", months: ["Apr-2025", "May-2025", "Jun-2025"] }
+                      { label: "Jun'24", endMonth: "Jun-2024" },
+                      { label: "Sep'24", endMonth: "Sep-2024" },
+                      { label: "Dec'24", endMonth: "Dec-2024" },
+                      { label: "Mar'25", endMonth: "Mar-2025" },
+                      { label: "Jun'25", endMonth: "Jun-2025" }
                     ];
                     chartData = quarters.map(q => {
-                      const rows = monthly.filter(row => q.months.includes(row.label));
-                      let Unbilled = rows.reduce((sum, r) => sum + (r.Unbilled || 0), 0);
-                      let AR = rows.reduce((sum, r) => sum + (r.AR || 0), 0);
-                      let TotalOutstanding = rows.reduce((sum, r) => sum + (r.TotalOutstanding || 0), 0);
+                      const endMonthRow = monthly.find(row => row.label === q.endMonth);
+                      if (!endMonthRow) return { label: q.label, Unbilled: 0, AR: 0 };
+                      
+                      let Unbilled = endMonthRow.Unbilled || 0;
+                      let AR = endMonthRow.AR || 0;
                       if (currency === 'USD') {
                         Unbilled = (Unbilled / USD_TO_INR_RATE) / 1e6;
                         AR = (AR / USD_TO_INR_RATE) / 1e6;
-                        TotalOutstanding = (TotalOutstanding / USD_TO_INR_RATE) / 1e6;
                       }
                       return {
                         label: q.label,
                         Unbilled,
-                        AR,
-                        TotalOutstanding
+                        AR
                       };
                     });
                   } else {
@@ -688,35 +655,88 @@ export default function ExecutiveDashboard({ currency = 'USD' }) {
                       monthly = monthly.map(row => ({
                         ...row,
                         Unbilled: (row.Unbilled / USD_TO_INR_RATE) / 1e6,
-                        AR: (row.AR / USD_TO_INR_RATE) / 1e6,
-                        TotalOutstanding: (row.TotalOutstanding / USD_TO_INR_RATE) / 1e6
+                        AR: (row.AR / USD_TO_INR_RATE) / 1e6
                       }));
                     }
                     chartData = monthly;
                   }
                   // Calculate max for Y-axis
                   const maxY = Math.max(
-                    ...chartData.map(d => Math.max(d.Unbilled || 0, d.AR || 0, d.TotalOutstanding || 0))
+                    ...chartData.map(d => Math.max(d.Unbilled || 0, d.AR || 0))
                   );
                   const yAxisDomain = currency === 'USD'
                     ? [0, Math.ceil(maxY * 1.1)]
                     : [0, Math.ceil(maxY * 1.1)];
-                  // Render chart with all three lines
+                  // Custom tooltip for Revenue Provisions
+                  const CustomRevenueTooltip = ({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-navy-300">
+                          <p className="font-bold text-navy-800 mb-2">{label}</p>
+                          <div className="space-y-1">
+                            {payload.map(entry => (
+                              <div key={entry.dataKey} className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.stroke }}></div>
+                                  <span className="text-sm text-navy-700">{entry.name || entry.dataKey}</span>
+                                </div>
+                                <span className="font-bold text-navy-900">
+                                  {currency === 'USD' ? `$${entry.value.toFixed(2)}M` : `₹${entry.value.toLocaleString()}`}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  };
+
+                  // Render chart with custom tooltip
                   return (
-                    <MetricTrendChart
-                      data={chartData}
-                      dataKey="Unbilled"
-                      color="#6366f1"
-                      formatValue={v => currency === 'USD' ? `$${v.toFixed(2)}M` : `₹${v.toLocaleString()}`}
-                      yAxisDomain={yAxisDomain}
-                      xAxisDataKey="label"
-                      extraLines={[
-                        { dataKey: 'AR', color: '#10b981', name: 'AR', strokeWidth: 2 },
-                        { dataKey: 'TotalOutstanding', color: '#f59e42', name: 'Total Outstanding', strokeWidth: 3 }
-                      ]}
-                      showYAxis={true}
-                      showAllLines={true}
-                    />
+                    <ResponsiveContainer width="100%" height={400}>
+                      <LineChart
+                        data={chartData}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                        <XAxis 
+                          dataKey="label" 
+                          stroke="#475569"
+                          fontSize={12}
+                          tickLine={true}
+                          axisLine={true}
+                          angle={-45}
+                          textAnchor="end"
+                          height={60}
+                        />
+                        <YAxis 
+                          stroke="#475569"
+                          fontSize={12}
+                          tickLine={true}
+                          axisLine={true}
+                          tickFormatter={v => currency === 'USD' ? `$${v.toFixed(1)}M` : `₹${(v / 1e6).toFixed(1)}M`}
+                          domain={yAxisDomain}
+                        />
+                        <Tooltip content={<CustomRevenueTooltip />} />
+                        <Line 
+                          type="monotone" 
+                          dataKey="Unbilled" 
+                          name="Unbilled" 
+                          stroke="#6366f1" 
+                          strokeWidth={3} 
+                          dot={false}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="AR" 
+                          name="AR" 
+                          stroke="#10b981" 
+                          strokeWidth={3} 
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
                   );
                 })()}
               </div>

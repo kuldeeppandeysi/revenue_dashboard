@@ -2,7 +2,7 @@
 
 export default [
 {
-  "label": "Q1 '24",
+  "label": "Jun'24",
   "live_arr": 592459901,
   "contracted_arr": null,
   "target_arr": null,
@@ -14,7 +14,7 @@ export default [
   "headcount": 244
 },
 {
-  "label": "Q2 '24",
+  "label": "Sep'24",
   "live_arr": 646873005,
   "contracted_arr": null,
   "target_arr": null,
@@ -26,7 +26,7 @@ export default [
   "headcount": 264
 },
 {
-  "label": "Q3 '24",
+  "label": "Dec'24",
   "live_arr": 705372103,
   "contracted_arr": null,
   "target_arr": null,
@@ -38,7 +38,7 @@ export default [
   "headcount": 302
 },
 {
-  "label": "Q4 '24",
+  "label": "Mar'25",
   "live_arr": 731880070,
   "contracted_arr": null,
   "target_arr": null,
@@ -50,7 +50,7 @@ export default [
   "headcount": 316
 },
 {
-  "label": "Q1 '25",
+  "label": "Jun'25",
   "live_arr": 689210258,
   "contracted_arr": null,
   "target_arr": 709063210,
