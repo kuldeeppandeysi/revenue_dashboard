@@ -68,8 +68,8 @@ export default [
   "rule_of_80": 28.3,
   "gm_percent": 98.9,
   "ebitda_percent": -2030.4,
-  "gm_target_percent": 37.3,
-  "ebitda_target_percent": -2898.1,
+  "gm_percent_target": 37.0,
+  "ebitda_percent_target": -2898.4,
   "headcount": 16
 }
 ];
