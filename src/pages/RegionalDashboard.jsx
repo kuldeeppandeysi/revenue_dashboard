@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import MetricCard from '../components/metrics/MetricCard';
 import MetricTrendChart from '../components/charts/MetricTrendChart';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import CombinedArrChart from '../components/charts/CombinedArrChart';
 import CombinedAccruedMrrChart from '../components/charts/CombinedAccruedMrrChart';
 import HeadcountChart from '../components/charts/HeadcountChart';
@@ -99,10 +100,37 @@ export default function RegionalDashboard({ currency = 'INR' }) {
     const aggregatedTrendData = useMemo(() => {
         let sourceData;
         if (granularity === 'quarterly') {
-            // Use country-specific quarterly data
+            // ...existing code...
             sourceData = selectedCountry === 'IN' ? quarterlyTrendDataIndia : quarterlyTrendDataSEA;
+            // ...existing code...
+            const monthlyQ2 = monthlyTrendData.filter(d => {
+                return d.country === selectedCountry &&
+                    (d.date === '2025-04-01' || d.date === '2025-05-01' || d.date === '2025-06-01');
+            });
+            const accruedMrrTargetSum = monthlyQ2.reduce((sum, d) => sum + (d.accrued_mrr_target || 0), 0);
+            sourceData = sourceData.map(q => {
+                if (q.label && (q.label.includes("Q2") || q.label.includes("Jun")) && q.country === selectedCountry) {
+                    return { ...q, accrued_mrr_target: accruedMrrTargetSum };
+                }
+                return q;
+            });
         } else if (granularity === 'annual') {
-            sourceData = annualTrendData;
+            // Only show FY25 and later
+            sourceData = annualTrendData.filter(d => {
+                // Accept FY25, 2025, or any label containing '25' or later
+                if (d.country !== selectedCountry) return false;
+                if (d.label) {
+                    // Accept 'FY25', '2025', '2025-26', etc.
+                    const match = d.label.match(/(FY)?(\d{2,4})/);
+                    if (match) {
+                        let year = match[2];
+                        if (year.length === 2) year = '20' + year;
+                        return parseInt(year) >= 2025;
+                    }
+                }
+                if (d.year && parseInt(d.year) >= 2025) return true;
+                return false;
+            });
         } else { // monthly
             sourceData = monthlyTrendData.map(d => ({ 
                 ...d, 
@@ -203,28 +231,160 @@ export default function RegionalDashboard({ currency = 'INR' }) {
                     <h3 className="text-lg font-bold text-navy-800 mb-4">ARR Performance</h3>
                     <CombinedArrChart data={displayTrendData} currency={currency} />
                   </div>
-                  <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
-                    <h3 className="text-lg font-bold text-navy-800 mb-4">Accrued MRR Performance</h3>
-                    <CombinedAccruedMrrChart data={displayTrendData} currency={currency} />
-                  </div>
-                  {trendChartDefinitions.map(def => (
-                    <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
-                      <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
-                      <MetricTrendChart 
-                        data={displayTrendData}
-                        dataKey={def.key}
-                        targetKey={def.targetKey}
-                        xAxisDataKey="label"
-                        formatValue={def.format}
-                        color={def.color}
-                        target={def.target}
-                        yAxisDomain={def.domain}
-                      />
+                  {granularity !== 'annual' && (
+                    <div className="xl:col-span-3 bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
+                      <h3 className="text-lg font-bold text-navy-800 mb-4 flex items-center justify-between">
+                          Accrued MRR Performance
+                          <span className="flex items-center gap-6">
+                              <span className="flex items-center gap-2">
+                                  <span className="w-3 h-3 rounded-full" style={{ background: '#6366f1', display: 'inline-block' }}></span>
+                                  <span className="text-sm font-medium text-navy-700">Accrued MRR</span>
+                              </span>
+                              <span className="flex items-center gap-2">
+                                  <span className="w-3 h-3 rounded-full" style={{ background: '#94a3b8', display: 'inline-block' }}></span>
+                                  <span className="text-sm font-medium text-navy-700">Accrued MRR Target</span>
+                              </span>
+                          </span>
+                      </h3>
+                      {/* Custom chart for accrued_mrr and accrued_mrr_target */}
+                      {(() => {
+                          // Custom chart for both monthly and quarterly
+                          const chartData = displayTrendData;
+                          const formatAccruedValue = (v) => {
+                              if (currency === 'USD') return `$${(v / 1e6).toFixed(1)}M`;
+                              return `₹${(v / 1e6).toFixed(1)}M`;
+                          };
+                          const CustomAccruedTooltip = ({ active, payload, label }) => {
+                              if (active && payload && payload.length) {
+                                  return (
+                                      <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-navy-300">
+                                          <p className="font-bold text-navy-800 mb-2">{label}</p>
+                                          <div className="space-y-1">
+                                              {payload.map(entry => (
+                                                  <div key={entry.dataKey} className="flex items-center justify-between gap-4">
+                                                      <div className="flex items-center gap-2">
+                                                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.stroke }}></div>
+                                                          <span className="text-sm text-navy-700">{entry.name || entry.dataKey}</span>
+                                                      </div>
+                                                      <span className="font-bold text-navy-900">
+                                                          {formatAccruedValue(entry.value)}
+                                                      </span>
+                                                  </div>
+                                              ))}
+                                          </div>
+                                      </div>
+                                  );
+                              }
+                              return null;
+                          };
+                          // Calculate max for Y-axis
+                          const maxY = Math.max(...chartData.map(d => Math.max(d.accrued_mrr || 0, d.accrued_mrr_target || 0)));
+                          const yAxisDomain = currency === 'USD'
+                              ? [0, Math.ceil(maxY * 1.1)]
+                              : [0, Math.ceil(maxY * 1.1)];
+                          // Render chart
+                          return (
+                              <ResponsiveContainer width="100%" height={400}>
+                                  <LineChart
+                                      data={chartData}
+                                      margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                                  >
+                                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                                      <XAxis 
+                                          dataKey="label"
+                                          stroke="#475569"
+                                          fontSize={12}
+                                          tickLine={true}
+                                          axisLine={true}
+                                          angle={-45}
+                                          textAnchor="end"
+                                          height={60}
+                                      />
+                                      <YAxis 
+                                          stroke="#475569"
+                                          fontSize={12}
+                                          tickLine={true}
+                                          axisLine={true}
+                                          tickFormatter={formatAccruedValue}
+                                          domain={yAxisDomain}
+                                      />
+                                      <Tooltip content={<CustomAccruedTooltip />} />
+                                      <Line 
+                                          type="monotone" 
+                                          dataKey="accrued_mrr" 
+                                          name="Accrued MRR" 
+                                          stroke="#6366f1" 
+                                          strokeWidth={3} 
+                                          dot={false}
+                                      />
+                                      <Line 
+                                          type="monotone" 
+                                          dataKey="accrued_mrr_target" 
+                                          name="Accrued MRR Target" 
+                                          stroke="#94a3b8" 
+                                          strokeDasharray="5 5"
+                                          strokeWidth={2} 
+                                          dot={false}
+                                      />
+                                  </LineChart>
+                              </ResponsiveContainer>
+                          );
+                      })()}
                     </div>
-                  ))}
+                  )}
+                                    {trendChartDefinitions
+                                        .filter(def => !(granularity === 'annual' && def.key === 'rule_of_80'))
+                                        .map(def => {
+                                            // Dynamic Y-axis scaling for specific charts
+                                            let yAxisDomain = def.domain;
+                                            if (def.key === "gm_percent" && granularity === "monthly") {
+                                                const values = displayTrendData.map(d => d[def.key]).filter(v => v !== undefined && v !== null);
+                                                if (values.length > 0) {
+                                                    const max = Math.max(...values);
+                                                    yAxisDomain = [45, Math.ceil(max + (max - 45) * 0.1)];
+                                                } else {
+                                                    yAxisDomain = [45, 90];
+                                                }
+                                            } else if (["live_clients", "nrr", "ebitda_percent", "rule_of_80"].includes(def.key)) {
+                                                const values = displayTrendData.map(d => d[def.key]).filter(v => v !== undefined && v !== null);
+                                                if (values.length > 0) {
+                                                    const min = Math.min(...values);
+                                                    const max = Math.max(...values);
+                                                    // Add some padding
+                                                    const padding = (max - min) * 0.1 || 10;
+                                                    yAxisDomain = [Math.floor(min - padding), Math.ceil(max + padding)];
+                                                }
+                                            }
+                                            return (
+                                                <div key={def.key} className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
+                                                    <h3 className="text-lg font-bold text-navy-800 mb-4">{def.title}</h3>
+                                                    <MetricTrendChart 
+                                                        data={displayTrendData}
+                                                        dataKey={def.key}
+                                                        targetKey={def.targetKey}
+                                                        xAxisDataKey="label"
+                                                        formatValue={def.format}
+                                                        color={def.color}
+                                                        target={def.target}
+                                                        yAxisDomain={yAxisDomain}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
                   <div className="bg-white p-6 rounded-xl border-2 border-navy-200 shadow-lg">
                     <h3 className="text-lg font-bold text-navy-800 mb-4">Headcount Trend</h3>
-                    <HeadcountChart data={displayTrendData} />
+                    {/* Dynamic Y-axis for HeadcountChart */}
+                    {(() => {
+                        const values = displayTrendData.map(d => d.headcount).filter(v => v !== undefined && v !== null);
+                        let yAxisDomain = undefined;
+                        if (values.length > 0) {
+                            const min = Math.min(...values);
+                            const max = Math.max(...values);
+                            const padding = (max - min) * 0.1 || 10;
+                            yAxisDomain = [Math.floor(min - padding), Math.ceil(max + padding)];
+                        }
+                        return <HeadcountChart data={displayTrendData} yAxisDomain={yAxisDomain} />;
+                    })()}
                   </div>
                 </div>
             </section>
